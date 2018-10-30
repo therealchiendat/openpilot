@@ -42,6 +42,7 @@
 #define SAFETY_HYUNDAI 7
 #define SAFETY_TESLA 8
 #define SAFETY_CHRYSLER 9
+#define SAFETY_MAZDA 11
 #define SAFETY_TOYOTA_IPAS 0x1335
 #define SAFETY_TOYOTA_NOLIMITS 0x1336
 #define SAFETY_ALLOUTPUT 0x1337
@@ -123,6 +124,9 @@ void *safety_setter_thread(void *s) {
     break;
   case (int)cereal::CarParams::SafetyModels::CHRYSLER:
     safety_setting = SAFETY_CHRYSLER;
+    break;
+  case (int)cereal::CarParams::SafetyModels::MAZDA:
+    safety_setting = SAFETY_MAZDA;
     break;
   default:
     LOGE("unknown safety model: %d", safety_model);
