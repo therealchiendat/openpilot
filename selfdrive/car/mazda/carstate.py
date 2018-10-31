@@ -16,7 +16,7 @@ def get_powertrain_can_parser(CP, canbus):
     ("FR", "WHEEL_SPEEDS", 0),
     ("RL", "WHEEL_SPEEDS", 0), 
     ("RR", "WHEEL_SPEEDS", 0), 
-    ("Steer_Torque_Sensor", "Steering_Torque", 0),
+    ("STEER_TORQUE_SENSOR", "Steering_Torque", 0),
     ("Cruise_Activated", "CruiseControl", 0), 
   ]
   
@@ -77,11 +77,11 @@ class CarState(object):
     self.prev_left_blinker_on = self.left_blinker_on
     self.prev_right_blinker_on = self.right_blinker_on
     self.prev_blinker_on = self.blinker_on
-    self.left_blinker_on = pt_cp.vl["BLINK_INFO"]['LEFT_BLINK']
-    self.right_blinker_on = pt_cp.vl["BLINK_INFO"]['RIGHT_BLINK']
+    self.left_blinker_on = pt_cp.vl["BLINK_INFO"]['LEFT_BLINK'] == 1
+    self.right_blinker_on = pt_cp.vl["BLINK_INFO"]['RIGHT_BLINK'] == 1
     self.blinker_on = self.left_blinker_on or self.right_blinker_on
 
-    self.steer_torque_driver = pt_cp.vl["Steering_Torque"]['Steer_Torque_Sensor']
+    self.steer_torque_driver = pt_cp.vl["Steering_Torque"]['STEER_TORQUE_SENSOR']
     self.acc_active = pt_cp.vl["CruiseControl"]['Cruise_Activated']
     self.main_on = pt_cp.vl["CruiseControl"]['Cruise_Activated']
       
