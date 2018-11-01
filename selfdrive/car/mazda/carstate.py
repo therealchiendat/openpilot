@@ -17,16 +17,29 @@ def get_powertrain_can_parser(CP, canbus):
     ("RL", "WHEEL_SPEEDS", 0), 
     ("RR", "WHEEL_SPEEDS", 0), 
     ("STEER_TORQUE_SENSOR", "Steering_Torque", 0),
-    ("Cruise_Activated", "CruiseControl", 0), 
+    ("Cruise_Activated", "CruiseControl", 0),
+    ("STANDSTILL","PEDALS"),
+    ("BREAK_PEDAL_1","PEDALS"),
+    ("GEAR","GEAR"),
+    ("STEER_ANGLE_RATE", "STEER_STATUS"),
+    ("DRIVER_SEATBELT", "SEATBELT"),
+    ("DRIVER_DR", "DOORS"),
+    ("GAS_PEDAL_PRESSED", "CRZ_TBD"),
   ]
   
   checks = [
     # sig_address, frequency
-    ("BLINK_INFO", 10),
-    ("Steering", 100),
-    ("WHEEL_SPEEDS", 120),
-    ("Steering_Torque", 100),
-    ("CruiseControl", 50),
+    ("BLINK_INFO", 100),
+    ("Steering", 10),
+    ("WHEEL_SPEEDS", 11),
+    ("Steering_Torque", 20),
+    ("CruiseControl", 20),
+    ("PEDALS", 10),
+    ("STEER_STATUS", 10),
+    ("SEATBELT", 100),
+    ("DOORS", 100),
+    ("CRZ_TBD", 50),
+    ("GEAR", 50),
   ]
 
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.powertrain)
@@ -87,5 +100,8 @@ class CarState(object):
       
     self.steer_override = abs(self.steer_torque_driver) > 150 #fixme
     self.angle_steers = pt_cp.vl["Steering"]['Steering_Angle'] 
+    self.angle_steers_rate = cp.vl["STEER_STATUS"]['STEER_ANGLE_RATE']
+
+    self.standstill = cp.vl["PEDALS"]['STANDSTILL']
+    self.brake_pressed = cp.vl["PEDALS"]['BREAK_PEDAL_1']
     
-    self.standstill = self.v_ego_raw < 0.01

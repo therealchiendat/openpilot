@@ -36,19 +36,19 @@ BS_:
 BU_: XXX
 
 
-BO_ 117 MSG_WHAT: 8 XXX
+BO_ 117 steer1: 8 XXX
  SG_ CTR : 7|8@0+ (1,0) [0|255] "" XXX
  SG_ STEER_ANGLE_1 : 19|12@0+ (1,0) [0|255] "" XXX
- SG_ STEER_ANGLE_2 : 39|16@0+ (1,0) [0|131071] "" XXX
  SG_ NEW_SIGNAL_1 : 48|1@0+ (1,0) [0|1] "" XXX
  SG_ NEW_SIGNAL_2 : 49|1@0+ (1,0) [0|1] "" XXX
  SG_ NEW_SIGNAL_3 : 55|1@0+ (1,0) [0|63] "" XXX
  SG_ NEW_SIGNAL_4 : 54|4@0+ (1,0) [0|31] "" XXX
  SG_ NEW_SIGNAL_5 : 50|1@0+ (1,0) [0|1] "" XXX
+ SG_ STEER_ANGLE_2 : 39|16@0+ (0.5,0) [0|131071] "" XXX
 
-BO_ 118 NEW_MSG_2: 8 XXX
- SG_ NEW_SIGNAL_2 : 19|12@0+ (1,0) [0|4095] "" XXX
+BO_ 118 steer2: 8 XXX
  SG_ CTR : 7|8@0+ (1,0) [0|127] "" XXX
+ SG_ NEW_SIGNAL_2 : 19|12@0+ (1,0) [0|4095] "" XXX
 
 BO_ 514 ENGINE_DATA: 8 XXX
  SG_ RPM : 7|16@0+ (1,0) [0|65535] "" XXX
@@ -77,30 +77,29 @@ BO_ 533 WHEEL_SPEEDS: 8 XXX
  SG_ FR : 23|16@0+ (0.01,-100) [0|65535] "" XXX
 
 BO_ 134 Steering2: 8 XXX
- SG_ NEW_SIGNAL_3 : 39|16@0+ (1,0) [0|15] "" XXX
- SG_ COUNTER : 55|2@0+ (1,0) [0|255] "" XXX
- SG_ NEW_SIGNAL_2 : 48|6@1+ (1,0) [0|7] "" XXX
- SG_ NEW_SIGNAL_1 : 63|8@0+ (1,0) [0|255] "" XXX
+ SG_ NEW_SIGNAL_2 : 48|3@1+ (1,0) [0|7] "" XXX
  SG_ CTR : 22|4@0+ (1,0) [0|7] "" XXX
  SG_ NEW_SIGNAL_4 : 23|1@0+ (1,0) [0|1] "" XXX
  SG_ NEW_SIGNAL_5 : 18|3@0+ (1,0) [0|1] "" XXX
  SG_ NEW_SIGNAL_7 : 24|3@1+ (1,0) [0|7] "" XXX
  SG_ CTR_2 : 28|3@1+ (1,0) [0|7] "" XXX
  SG_ Steering_Angle : 7|16@0+ (0.1,-1600) [-500|500] "deg" XXX
+ SG_ NEW_SIGNAL_3 : 39|8@0- (1,0) [0|15] "" XXX
+ SG_ NEW_SIGNAL_1 : 63|2@0+ (1,0) [0|255] "" XXX
 
 BO_ 576 Steering_Torque: 8 XXX
  SG_ NEW_SIGNAL_2 : 39|8@0+ (1,0) [0|127] "" XXX
  SG_ NEW_SIGNAL_1 : 20|4@1+ (1,0) [0|255] "" XXX
- SG_ STEER_ANGLE_RATE : 46|20@0- (0.01,0) [-3000|3000] "deg/s" XXX
  SG_ STEER_TORQUE_SENSOR : 7|16@0+ (0.5,-15000) [0|255] "" XXX
  SG_ NEW_SIGNAL_3 : 47|1@0+ (1,0) [0|1] "" XXX
+ SG_ STEER_TORUE_MOTOR : 46|20@0- (0.02,0) [-3000|3000] "tbd" XXX
 
-BO_ 577 STEERING_TORQUE2: 8 XXX
- SG_ NEW_SIGNAL_1 : 23|16@0+ (1,0) [0|1] "" XXX
+BO_ 577 STEER_STATUS: 8 XXX
  SG_ NEW_SIGNAL_2 : 63|8@0+ (1,0) [0|255] "" XXX
  SG_ COUNTER : 7|4@0+ (1,0) [0|15] "" XXX
  SG_ NEW_SIGNAL_4 : 50|1@1+ (1,0) [0|3] "" XXX
  SG_ NEW_SIGNAL_3 : 52|1@0+ (1,0) [0|3] "" XXX
+ SG_ STEER_ANGLE_RATE : 23|16@0+ (0.25,-8192) [0|1] "deg/s" XXX
 
 BO_ 582 CAM__LANEMAYBE: 8 XXX
  SG_ Counter : 7|2@0+ (1,0) [0|3] "" XXX
@@ -253,6 +252,9 @@ BO_ 1180 last_byte_roughRPM: 8 XXX
 
 BO_ 1078 HVAC: 8 XXX
  SG_ NEW_SIGNAL_1 : 2|1@0+ (1,0) [0|1] "" XXX
+ SG_ NEW_SIGNAL_2 : 8|1@0+ (1,0) [0|255] "" XXX
+ SG_ NEW_SIGNAL_3 : 23|1@0+ (1,0) [0|65535] "" XXX
+ SG_ NEW_SIGNAL_4 : 56|5@0+ (1,0) [0|255] "" XXX
 
 BO_ 1056 NEW_MSG_13: 8 XXX
  SG_ STOPPED : 32|1@0+ (1,0) [0|255] "" XXX
@@ -335,12 +337,12 @@ BO_ 836 NEW_MSG_19: 8 XXX
  SG_ COUNTER2 : 63|8@0+ (1,0) [0|255] "" XXX
 
 BO_ 832 SEATBELT: 8 XXX
- SG_ DRIVER_SEATBELT : 27|1@0+ (1,0) [0|1] "" XXX
  SG_ NEW_SIGNAL_1 : 7|8@0+ (1,0) [0|255] "" XXX
  SG_ PASSENGER_SEATBELT : 26|1@1+ (1,0) [0|7] "" XXX
  SG_ CTR1 : 15|4@0+ (1,0) [0|15] "" XXX
  SG_ CTR2 : 23|4@0+ (1,0) [0|255] "" XXX
  SG_ NEW_SIGNAL_4 : 8|4@1+ (1,0) [0|3] "" XXX
+ SG_ DRIVER_SEATBELT : 27|1@0+ (1,0) [0|1] "" XXX
 
 BO_ 866 NEW_MSG_21: 8 XXX
  SG_ NEW_SIGNAL_2 : 7|8@0+ (1,0) [0|131071] "" XXX
