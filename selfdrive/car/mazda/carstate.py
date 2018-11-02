@@ -95,13 +95,13 @@ class CarState(object):
     self.blinker_on = self.left_blinker_on or self.right_blinker_on
 
     self.steer_torque_driver = pt_cp.vl["Steering_Torque"]['STEER_TORQUE_SENSOR']
-    self.acc_active = pt_cp.vl["CruiseControl"]['Cruise_Activated']
-    self.main_on = pt_cp.vl["CruiseControl"]['Cruise_Activated']
+    self.acc_active = pt_cp.vl["CruiseControl"]['Cruise_Activated'] == 1
+    self.main_on = pt_cp.vl["CruiseControl"]['Cruise_Activated'] == 1
       
     self.steer_override = abs(self.steer_torque_driver) > 150 #fixme
     self.angle_steers = pt_cp.vl["Steering"]['Steering_Angle'] 
     self.angle_steers_rate = cp.vl["STEER_STATUS"]['STEER_ANGLE_RATE']
 
-    self.standstill = cp.vl["PEDALS"]['STANDSTILL']
-    self.brake_pressed = cp.vl["PEDALS"]['BREAK_PEDAL_1']
+    self.standstill = cp.vl["PEDALS"]['STANDSTILL'] == 1
+    self.brake_pressed = cp.vl["PEDALS"]['BREAK_PEDAL_1'] == 1
     
