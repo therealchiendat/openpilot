@@ -56,21 +56,33 @@ class CarInterface(object):
 
     # TODO: gate this on detection
     ret.enableCamera = True
+
     std_cargo = 136
+    # hardcoding honda civic 2016 touring params so they can be used to
+    # scale unknown params for other cars
+    mass_civic = 2923./2.205 + std_cargo
+    wheelbase_civic = 2.70
+    centerToFront_civic = wheelbase_civic * 0.4
+    centerToRear_civic = wheelbase_civic - centerToFront_civic
+    rotationalInertia_civic = 2500
+    tireStiffnessFront_civic = 192150
+    tireStiffnessRear_civic = 202500
 
     if candidate in [CAR.CX5]:
+      stop_and_go = True
       ret.mass =  3655 * CV.LB_TO_KG + std_cargo
       ret.wheelbase = 2.7
-      ret.centerToFront = ret.wheelbase * 0.4
-
+      ret.centerToFront = ret.wheelbase * 0.41
       ret.steerRatio = 15.5
-      ret.steerActuatorDelay = 0.1
-      ret.steerRateCost = 0
       ret.steerKf = 0.00006
       ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
-      ret.steerKpV, ret.steerKiV = [[0.0], [0.00]]
+      ret.steerKpV, ret.steerKiV = [[0.8], [0.24]]
       ret.steerMaxBP = [0.] # m/s
       ret.steerMaxV = [1.]
+      tire_stiffness_factor = 0.444
+
+    ret.steerActuatorDelay = 0.1
+    ret.steerRateCost = 0.5
 
     ret.safetyModel = car.CarParams.SafetyModels.mazda
     ret.steerControlType = car.CarParams.SteerControlType.torque
@@ -80,8 +92,8 @@ class CarInterface(object):
     # FIXME: from gm
     ret.gasMaxBP = [0.]
     ret.gasMaxV = [.5]
-    ret.brakeMaxBP = [0.]
-    ret.brakeMaxV = [1.]
+    ret.brakeMaxBP = [5., 20.]
+    ret.brakeMaxV = [1., 0.8]
 
     ret.longPidDeadzoneBP = [0.]
     ret.longPidDeadzoneV = [0.]
@@ -95,15 +107,6 @@ class CarInterface(object):
     ret.startAccel = 0.8
     # end from gm
 
-    # hardcoding honda civic 2016 touring params so they can be used to
-    # scale unknown params for other cars
-    mass_civic = 2923./2.205 + std_cargo
-    wheelbase_civic = 2.70
-    centerToFront_civic = wheelbase_civic * 0.4
-    centerToRear_civic = wheelbase_civic - centerToFront_civic
-    rotationalInertia_civic = 2500
-    tireStiffnessFront_civic = 192150
-    tireStiffnessRear_civic = 202500
     centerToRear = ret.wheelbase - ret.centerToFront
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase
