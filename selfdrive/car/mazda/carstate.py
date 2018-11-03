@@ -18,13 +18,13 @@ def get_powertrain_can_parser(CP, canbus):
     ("RR", "WHEEL_SPEEDS", 0), 
     ("STEER_TORQUE_SENSOR", "Steering_Torque", 0),
     ("Cruise_Activated", "CruiseControl", 0),
-    ("STANDSTILL","PEDALS", 0),
-    ("BREAK_PEDAL_1","PEDALS", 0),
-    ("GEAR","GEAR", 0),
-    ("STEER_ANGLE_RATE", "STEER_STATUS", 0),
-    ("DRIVER_SEATBELT", "SEATBELT", 0),
-    ("DRIVER_DR", "DOORS", 0),
-    ("GAS_PEDAL_PRESSED", "CRZ_TBD", 0),
+    #("STANDSTILL","PEDALS", 0),
+    #("BREAK_PEDAL_1","PEDALS", 0),
+    #("GEAR","GEAR", 0),
+    #("STEER_ANGLE_RATE", "STEER_STATUS", 0),
+    #("DRIVER_SEATBELT", "SEATBELT", 0),
+    #("DRIVER_DR", "DOORS", 0),
+    #("GAS_PEDAL_PRESSED", "CRZ_TBD", 0),
   ]
   
   checks = [
@@ -34,12 +34,12 @@ def get_powertrain_can_parser(CP, canbus):
     ("WHEEL_SPEEDS", 11),
     ("Steering_Torque", 20),
     ("CruiseControl", 20),
-    ("PEDALS", 10),
-    ("STEER_STATUS", 10),
-    ("SEATBELT", 100),
-    ("DOORS", 100),
-    ("CRZ_TBD", 50),
-    ("GEAR", 50),
+    #("PEDALS", 10),
+    #("STEER_STATUS", 10),
+    #("SEATBELT", 100),
+    #("DOORS", 100),
+    #("CRZ_TBD", 50),
+    #("GEAR", 50),
   ]
 
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.powertrain)
@@ -73,7 +73,7 @@ class CarState(object):
   def update(self, pt_cp):
 
     self.can_valid = pt_cp.can_valid
-#    self.can_valid = True
+    self.can_valid = True
     
     self.v_wheel_fl = pt_cp.vl["WHEEL_SPEEDS"]['FL'] * CV.KPH_TO_MS
     self.v_wheel_fr = pt_cp.vl["WHEEL_SPEEDS"]['FR'] * CV.KPH_TO_MS
@@ -95,13 +95,15 @@ class CarState(object):
     self.blinker_on = self.left_blinker_on or self.right_blinker_on
 
     self.steer_torque_driver = pt_cp.vl["Steering_Torque"]['STEER_TORQUE_SENSOR']
-    self.acc_active = pt_cp.vl["CruiseControl"]['Cruise_Activated'] == 1
-    self.main_on = pt_cp.vl["CruiseControl"]['Cruise_Activated'] == 1
+    self.acc_active = pt_cp.vl["CruiseControl"]['Cruise_Activated']
+    self.main_on = pt_cp.vl["CruiseControl"]['Cruise_Activated']
       
     self.steer_override = abs(self.steer_torque_driver) > 150 #fixme
     self.angle_steers = pt_cp.vl["Steering"]['Steering_Angle'] 
-    self.angle_steers_rate = pt_cp.vl["STEER_STATUS"]['STEER_ANGLE_RATE']
+    #self.angle_steers_rate = pt_cp.vl["STEER_STATUS"]['STEER_ANGLE_RATE']
 
-    self.standstill = pt_cp.vl["PEDALS"]['STANDSTILL'] == 1
-    self.brake_pressed = pt_cp.vl["PEDALS"]['BREAK_PEDAL_1'] == 1
+    #self.standstill = pt_cp.vl["PEDALS"]['STANDSTILL'] == 1
+    #self.brake_pressed = pt_cp.vl["PEDALS"]['BREAK_PEDAL_1'] == 1
+
+    self.standstill = self.v_ego_raw < 0.01
     
