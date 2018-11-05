@@ -11,34 +11,34 @@ def get_powertrain_can_parser(CP, canbus):
     # sig_name, sig_address, default
     ("LEFT_BLINK", "BLINK_INFO", 0), 
     ("RIGHT_BLINK", "BLINK_INFO", 0),
-    ("Steering_Angle", "Steering", 0),
+    ("STEER_ANGLE", "STEER", 0),
+    ("STEER_ANGLE_RATE", "STEER_RATE", 0),
+    ("STEER_TORQUE_SENSOR", "STEER_TORQUE", 0),
     ("FL", "WHEEL_SPEEDS", 0), 
     ("FR", "WHEEL_SPEEDS", 0),
     ("RL", "WHEEL_SPEEDS", 0), 
     ("RR", "WHEEL_SPEEDS", 0), 
-    ("STEER_TORQUE_SENSOR", "Steering_Torque", 0),
-    ("Cruise_Activated", "CruiseControl", 0),
+    ("CRZ_ACTIVE", "CRZ_CTRL", 0),
     ("STANDSTILL","PEDALS", 0),
-    ("BREAK_PEDAL_1","PEDALS", 0),
+    ("BRAKE_ON","PEDALS", 0),
     ("GEAR","GEAR", 0),
-    ("STEER_ANGLE_RATE", "STEER_STATUS", 0),
     ("DRIVER_SEATBELT", "SEATBELT", 0),
-    ("DRIVER_DR", "DOORS", 0),
-    ("GAS_PEDAL_PRESSED", "CRZ_TBD", 0),
+    ("FL", "DOORS", 0),
+    ("GAS_PEDAL_PRESSED", "CRZ_EVENTS", 0),
   ]
   
   checks = [
     # sig_address, frequency
     ("BLINK_INFO", 100),
-    ("Steering", 20),
+    ("STEER", 20),
+    ("STEER_RATE", 20),
+    ("STEER_TORQUE", 20),
     ("WHEEL_SPEEDS", 20),
-    ("Steering_Torque", 20),
-    ("CruiseControl", 20),
+    ("CRZ_CTRL", 20),
+    ("CRZ_EVENTS", 50),
     ("PEDALS", 20),
-    ("STEER_STATUS", 20),
     ("SEATBELT", 100),
     ("DOORS", 100),
-    ("CRZ_TBD", 50),
     ("GEAR", 50),
   ]
 
@@ -94,13 +94,14 @@ class CarState(object):
     self.right_blinker_on = pt_cp.vl["BLINK_INFO"]['RIGHT_BLINK'] == 1
     self.blinker_on = self.left_blinker_on or self.right_blinker_on
 
-    self.steer_torque_driver = pt_cp.vl["Steering_Torque"]['STEER_TORQUE_SENSOR']
-    self.acc_active = pt_cp.vl["CruiseControl"]['Cruise_Activated']
-    self.main_on = pt_cp.vl["CruiseControl"]['Cruise_Activated']
+    self.acc_active = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
+    self.main_on = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
       
+    self.steer_torque_driver = pt_cp.vl["STEER_TORQUE"]['STEER_TORQUE_SENSOR']
     self.steer_override = abs(self.steer_torque_driver) > 150 #fixme
-    self.angle_steers = pt_cp.vl["Steering"]['Steering_Angle'] 
-    self.angle_steers_rate = pt_cp.vl["STEER_STATUS"]['STEER_ANGLE_RATE']
+
+    self.angle_steers = pt_cp.vl["STEER"]['STEER_ANGLE'] 
+    self.angle_steers_rate = pt_cp.vl["STEER_RATE"]['STEER_ANGLE_RATE']
 
     #self.standstill = pt_cp.vl["PEDALS"]['STANDSTILL'] == 1
     #self.brake_pressed = pt_cp.vl["PEDALS"]['BREAK_PEDAL_1'] == 1
