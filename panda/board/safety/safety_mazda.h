@@ -26,15 +26,14 @@ static int mazda_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
 
   // forward CAN 0 > 1
   if (bus_num == 0) {
-    return -1; // CAM CAN , for now  with stock OBDII don't forward anything
+    return 1; //  CAN Bus0 ==> CAN Bus1
   }
   // forward CAN 1 > 0, except ES_LKAS
   else if (bus_num == 1) {
     if (addr == 0x243) {
-      return -1;
+      return 0;
     }
-
-    return -1; // Main CAN, for now  with stock OBDII don't forward anything
+    return 0; // Main CAN
   }
 
   // fallback to do not forward
