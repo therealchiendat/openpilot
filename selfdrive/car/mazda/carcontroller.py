@@ -94,7 +94,8 @@ class CarController(object):
         #  dec: chechsum = 249 - 11 - 8 -0 - 0  - 32 - 2  - 0 - 0   = 196
         checksum = 249 - idx - (apply_steer >> 8) - (apply_steer & 0x0FF) - 32 - 2
         
-      can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, idx, apply_steer, checksum))
+      can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
+                                                        CS.CP.carFingerprint, idx, apply_steer, checksum))
 
 
     sendcan.send(can_list_to_can_capnp(can_sends, msgtype='sendcan').to_bytes())

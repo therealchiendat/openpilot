@@ -12,7 +12,7 @@ static void mazda_init(int16_t param) {
 }
 
 static int mazda_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
-  return false;
+  return true;
 }
 
 static int mazda_tx_lin_hook(int lin_num, uint8_t *data, int len) {
@@ -31,7 +31,7 @@ static int mazda_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
   // forward CAN 1 > 0, except ES_LKAS
   else if (bus_num == 1) {
     if (addr == 0x243) {
-      return 0;
+      return -1;
     }
     return 0; // Main CAN
   }
