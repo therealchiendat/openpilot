@@ -24,7 +24,7 @@ class CarControllerParams():
 
 
 class CarController(object):
-  def __init__(self, canbus, car_fingerprint):
+  def __init__(self, canbus, car_fingerprint, enable_camera):
     self.start_time = sec_since_boot()
     self.lkas_active = False
     self.steer_idx = 0
