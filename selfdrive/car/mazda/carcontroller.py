@@ -78,19 +78,13 @@ class CarController(object):
       if CS.v_ego_raw < 10:
           apply_steer = 0
 
-      if self.car_fingerprint == CAR.CX5:
-        
-        if apply_steer != 0:
-          chksm_steer = apply_steer
-        else:
-          chksm_steer = 0
+      lineval = 0
+      linebit = 0
 
+      if self.car_fingerprint == CAR.CX5:
         if CS.v_ego_raw < 10:
           linebit = 1
           lineval = 8
-        else:
-          linebit = 0
-          lineval = 0
         
         #counts from 0 to 15 then back to 0
         idx = (frame / P.STEER_STEP) % 16
