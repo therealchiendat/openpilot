@@ -92,7 +92,7 @@ BO_ 576 STEER_TORQUE: 8 XXX
  SG_ NEW_SIGNAL_1 : 20|4@1+ (1,0) [0|255] "" XXX
  SG_ STEER_TORQUE_SENSOR : 7|16@0+ (0.5,-15000) [0|255] "" XXX
  SG_ NEW_SIGNAL_3 : 47|1@0+ (1,0) [0|1] "" XXX
- SG_ STEER_ANGLE_RATE : 46|20@0- (0.01,0) [-3000|3000] "deg/s" XXX
+ SG_ STEER_TORQUE_MOTOR : 46|20@0- (0.01,0) [-3000|3000] "deg/s" XXX
 
 BO_ 577 STEER_RATE: 8 XXX
  SG_ NEW_SIGNAL_2 : 63|8@0+ (1,0) [0|255] "" XXX
@@ -101,49 +101,51 @@ BO_ 577 STEER_RATE: 8 XXX
  SG_ CTR : 7|4@0+ (1,0) [0|15] "" XXX
  SG_ STEER_ANGLE_RATE : 23|16@0+ (0.25,-8192) [0|1] "deg/s" XXX
 
-BO_ 582 CAM__LANEMAYBE: 8 XXX
+BO_ 582 CAM_LANEMAYBE: 8 XXX
  SG_ NEW_SIGNAL_4 : 40|8@1+ (1,0) [0|127] "" XXX
  SG_ NEW_SIGNAL_1 : 31|16@0- (1,0) [0|65535] "" XXX
  SG_ NEW_SIGNAL_2 : 55|16@0+ (1,0) [0|65535] "" XXX
  SG_ CTR : 7|2@0+ (1,0) [0|3] "" XXX
 
-BO_ 541 CAM__EMPTY: 8 XXX
+BO_ 541 CAM_EMPTY: 8 XXX
 
-BO_ 605 CAM_CTR: 8 XXX
- SG_ 7 : 0|8@1+ (1,0) [0|7] "" XXX
- SG_ 248 : 8|8@1+ (1,0) [0|255] "" XXX
- SG_ NEW_SIGNAL_1 : 26|4@1+ (1,0) [0|31] "" XXX
+BO_ 605 CAM_PEDESTRIAN: 8 XXX
  SG_ CTR : 17|4@0+ (1,0) [0|255] "" XXX
  SG_ RST_CTR : 23|6@0+ (1,0) [0|63] "" XXX
+ SG_ PED_WARNING : 9|1@1+ (1,0) [0|255] "" XXX
+ SG_ PED_BRAKE : 1|3@1+ (1,0) [0|7] "" XXX
+ SG_ signal1 : 26|4@1+ (1,0) [0|31] "" XXX
+ SG_ AEB_NOT_ENGAGED : 13|1@0+ (1,0) [0|1] "" XXX
 
-BO_ 578 CAM__IDK2: 8 XXX
- SG_ NEW_SIGNAL_1 : 48|8@1+ (1,0) [0|255] "" XXX
- SG_ NEW_SIGNAL_3 : 63|4@0+ (1,0) [0|255] "" XXX
- SG_ NEW_SIGNAL_4 : 40|8@1+ (1,0) [0|255] "" XXX
- SG_ NEW_SIGNAL_5 : 32|8@1+ (1,0) [0|255] "" XXX
- SG_ NEW_SIGNAL_6 : 24|8@1+ (1,0) [0|255] "" XXX
- SG_ NEW_SIGNAL_10 : 3|8@0+ (1,0) [0|1] "" XXX
- SG_ NEW_SIGNAL_7 : 9|10@0+ (1,0) [0|255] "" XXX
+BO_ 578 CAM_LANETRACK: 8 XXX
+ SG_ CHKSUM : 63|8@0+ (1,0) [0|255] "" XXX
+ SG_ ZERO : 53|6@0+ (1,0) [0|63] "" XXX
+ SG_ LINE1 : 3|10@0+ (1,-686) [0|1] "" XXX
  SG_ CTR : 7|4@0+ (1,0) [0|15] "" XXX
- SG_ CTR2 : 56|4@1+ (1,0) [0|15] "" XXX
+ SG_ LINE2 : 9|10@0+ (1,-686) [0|255] "" XXX
+ SG_ LANE_CURVE : 31|8@0+ (1,-127) [0|255] "" XXX
+ SG_ SIG1 : 39|8@0+ (1,-128) [0|255] "" XXX
+ SG_ SIG2 : 47|8@0+ (1,0) [0|255] "" XXX
+ SG_ SIG3 : 55|2@0+ (1,0) [0|3] "" XXX
 
 BO_ 579 CAM_LKAS: 8 XXX
- SG_ 128 : 23|1@0+ (1,0) [0|3] "" XXX
- SG_ NEW_SIGNAL_1 : 29|1@0+ (1,0) [0|65535] "" XXX
- SG_ NEW_SIGNAL_5 : 33|1@1+ (1,0) [0|7] "" XXX
- SG_ NO_LANE_LINE : 19|1@1+ (1,0) [0|8589934591] "" XXX
- SG_ LKAS_REQUEST : 3|12@0+ (1,-2048) [0|15] "" XXX
- SG_ CTR : 7|4@0+ (1,0) [0|3] "" XXX
+ SG_ LKAS_REQUEST : 3|12@0+ (1,-2048) [0|2048] "" XXX
+ SG_ CTR : 7|4@0+ (1,0) [0|15] "" XXX
+ SG_ LINE_NOT_VISIBLE : 19|1@1+ (1,0) [0|1] "" XXX
+ SG_ ERR_BIT_1 : 16|1@0+ (1,0) [0|1] "" XXX
+ SG_ BIT_1 : 29|1@0+ (1,0) [0|1] "" XXX
+ SG_ ERR_BIT_2 : 30|1@0+ (1,0) [0|1] "" XXX
+ SG_ BIT_2 : 33|1@1+ (1,0) [0|1] "" XXX
  SG_ CHKSUM : 56|8@1+ (1,0) [0|15] "" XXX
 
-BO_ 580 CAM__IDK: 8 XXX
+BO_ 580 CAM_DISTANCE: 8 XXX
  SG_ NEW_SIGNAL_1 : 55|16@0+ (1,0) [0|255] "" XXX
- SG_ NEW_SIGNAL_2 : 47|8@0+ (1,0) [0|65535] "" XXX
  SG_ NEW_SIGNAL_3 : 32|8@1+ (1,0) [0|255] "" XXX
  SG_ NEW_SIGNAL_4 : 24|8@1+ (1,0) [0|31] "" XXX
  SG_ NEW_SIGNAL_7 : 15|8@0+ (1,0) [0|1] "" XXX
  SG_ NEW_SIGNAL_6 : 16|8@1+ (1,0) [0|3] "" XXX
  SG_ NEW_SIGNAL_5 : 0|8@1+ (1,0) [0|127] "" XXX
+ SG_ DISTANCE : 47|8@0+ (1,0) [0|65535] "" XXX
 
 BO_ 581 CAM_IDK3: 8 XXX
  SG_ NEW_SIGNAL_1 : 0|8@1+ (1,0) [0|15] "" XXX
@@ -155,23 +157,21 @@ BO_ 581 CAM_IDK3: 8 XXX
  SG_ NEW_SIGNAL_7 : 16|8@1+ (1,0) [0|15] "" XXX
  SG_ NEW_SIGNAL_8 : 8|6@1+ (1,0) [0|255] "" XXX
 
-BO_ 863 CAM__STATUS: 8 XXX
+BO_ 863 CAM_STATUS: 8 XXX
  SG_ NEW_SIGNAL_1 : 32|1@0+ (1,0) [0|32767] "" XXX
  SG_ NEW_SIGNAL_5 : 4|2@0+ (1,0) [0|32767] "" XXX
- SG_ NEW_SIGNAL_2 : 40|1@1+ (1,0) [0|7] "" XXX
  SG_ NEW_SIGNAL_4 : 15|4@0+ (1,0) [0|15] "" XXX
- SG_ NEW_SIGNAL_6 : 0|3@1+ (1,0) [0|7] "" XXX
  SG_ STOP_SIGN : 31|4@0+ (1,0) [0|1] "" XXX
  SG_ NEW_SIGNAL_3 : 55|1@0+ (1,0) [0|127] "" XXX
+ SG_ NEW_SIGNAL_6 : 0|3@1+ (1,0) [0|7] "" XXX
+ SG_ FORWARD_COLLISION : 40|8@1+ (1,0) [0|7] "" XXX
 
-BO_ 1157 CAM__Empty2: 8 XXX
+BO_ 1157 CAM_Empty2: 8 XXX
 
-BO_ 1160 CAM__Empty3: 8 XXX
+BO_ 1160 CAM_Empty3: 8 XXX
  SG_ NEW_SIGNAL_1 : 47|24@0+ (1,0) [0|16777215] "" XXX
 
-BO_ 1088 CAM__LANEINFO: 8 XXX
- SG_ NEW_SIGNAL_1 : 6|1@0+ (1,0) [0|65535] "" XXX
- SG_ NEW_SIGNAL_4 : 57|2@0+ (1,0) [0|3] "" XXX
+BO_ 1088 CAM_LANEINFO: 8 XXX
  SG_ NEW_SIGNAL_5 : 62|1@0+ (1,0) [0|3] "" XXX
  SG_ NEW_SIGNAL_7 : 54|1@0+ (1,0) [0|31] "" XXX
  SG_ NEW_SIGNAL_6 : 13|1@0+ (1,0) [0|15] "" XXX
@@ -179,6 +179,10 @@ BO_ 1088 CAM__LANEINFO: 8 XXX
  SG_ LINE_VISIBLE : 0|1@1+ (1,0) [0|3] "" XXX
  SG_ LINE_NOT_VISIBLE : 1|1@0+ (1,0) [0|1] "" XXX
  SG_ LANE_LINES : 8|3@1+ (1,0) [0|3] "" XXX
+ SG_ NEW_SIGNAL_1 : 6|1@0+ (1,0) [0|65535] "" XXX
+ SG_ HANDS_ON_STEER_WARN : 56|1@0+ (1,0) [0|3] "" XXX
+ SG_ NO_ERR_BIT : 14|1@0+ (1,0) [0|1] "" XXX
+ SG_ ERR_BIT : 40|1@0+ (1,0) [0|1] "" XXX
 
 BO_ 1479 NEW_MSG_470: 8 XXX
 
@@ -456,7 +460,6 @@ BO_ 543 CRZ_EVENTS: 8 XXX
  SG_ NEW_SIGNAL_3 : 34|1@0+ (1,0) [0|1] "" XXX
  SG_ CHKSUM : 63|8@0+ (1,0) [0|15] "" XXX
  SG_ NEW_SIGNAL_1 : 55|4@0+ (1,0) [0|15] "" XXX
- SG_ NEW_SIGNAL_4 : 43|4@0+ (1,0) [0|255] "" XXX
  SG_ NEW_SIGNAL_5 : 47|4@0+ (1,0) [0|15] "" XXX
  SG_ NEW_SIGNAL_6 : 6|1@0+ (1,0) [0|255] "" XXX
  SG_ NEW_SIGNAL_8 : 0|1@0+ (1,0) [0|31] "" XXX
@@ -476,9 +479,10 @@ BO_ 543 CRZ_EVENTS: 8 XXX
  SG_ GAS_MAYBE : 22|1@0+ (1,0) [0|1] "" XXX
  SG_ NONACC_ACTIVE : 5|1@0+ (1,0) [0|1] "" XXX
  SG_ CRUISE_ACTIVE_CAR_MOVING : 16|1@0+ (1,0) [0|1] "" XXX
- SG_ CAS_CMD_MAYBE : 30|7@0+ (1,0) [0|255] "" XXX
  SG_ NONACC_RELATED : 11|1@0+ (1,0) [0|255] "" XXX
  SG_ CTR : 51|4@0+ (1,0) [0|15] "" XXX
+ SG_ CAS_CMD_MAYBE : 30|7@0- (1,0) [0|255] "" XXX
+ SG_ NEW_SIGNAL_4 : 43|4@0+ (1,0) [0|255] "" XXX
 
 BO_ 542 NEW_MSG_33: 8 XXX
  SG_ CTR : 48|4@1+ (1,0) [0|15] "" XXX
@@ -665,6 +669,7 @@ BO_ 1283 KEY_POSITION2: 8 XXX
 
 
 
+CM_ SG_ 605 PED_BRAKE "3: no brake, 4: brake";
 CM_ SG_ 1088 LANE_LINES "0 LKAS disabled, 1 no lines, 2 two lines, 3 left line, 4 right line";
 CM_ SG_ 157 CAN_OFF "Disengage Cruise if enabled, if already disabled  TURN it OFF ";
 CM_ SG_ 552 GEAR "0 P/N, 12 R, 2 D M1, 4 M2, 14 Shift";

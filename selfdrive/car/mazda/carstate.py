@@ -25,6 +25,16 @@ def get_powertrain_can_parser(CP, canbus):
     ("DRIVER_SEATBELT", "SEATBELT", 0),
     ("FL", "DOORS", 0),
     ("GAS_PEDAL_PRESSED", "CRZ_EVENTS", 0),
+
+    ("LINE1",      "CAM_LANETRACK", 0),
+    ("CTR",        "CAM_LANETRACK", -1),
+    ("LINE2",      "CAM_LANETRACK", 0),
+    ("LANE_CURVE", "CAM_LANETRACK", 0),
+    ("SIG1",       "CAM_LANETRACK", 0),
+    ("SIG2",       "CAM_LANETRACK", 0),
+    ("ZERO",       "CAM_LANETRACK", 0),
+    ("SIG3",       "CAM_LANETRACK", 0),
+    ("CHKSUM",     "CAM_LANETRACK", 0),
   ]
   
   checks = [
@@ -40,14 +50,50 @@ def get_powertrain_can_parser(CP, canbus):
     ("SEATBELT", 100),
     ("DOORS", 100),
     ("GEAR", 50),
+    ("CAM_LANETRACK", 60),
   ]
 
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.powertrain)
+
+def get_cam_can_parser(CP, canbus):
+  # this function generates lists for signal, messages and initial values
+  signals = [
+    # sig_name, sig_address, default
+    ("LINE1",      "CAM_LANETRACK", 0),
+    ("CTR",        "CAM_LANETRACK", -1),
+    ("LINE2",      "CAM_LANETRACK", 0),
+    ("LANE_CURVE", "CAM_LANETRACK", 0),
+    ("SIG1",       "CAM_LANETRACK", 0),
+    ("SIG2",       "CAM_LANETRACK", 0),
+    ("ZERO",       "CAM_LANETRACK", 0),
+    ("SIG3",       "CAM_LANETRACK", 0),
+    ("CHKSUM",     "CAM_LANETRACK", 0),
+  ]
   
+  checks = [
+    # sig_address, frequency
+    ("CAM_LANETRACK", 60),
+  ]
+
+  return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.cam)
+  
+class CAM_LaneTrack(object):
+  def __init__(self, ln1, ctr, ln2, lc, s1, s2, z, s3, ck):
+    self.line1 = ln1
+    self.ctr = ctr
+    self.line2 = ln2
+    self.lane_curve = lc
+    self.sig1 = s1
+    self.sig2 = s2
+    self.zero = z
+    self.sig3 = s3
+    self.chksum = ck
+
 class CarState(object):
   def __init__(self, CP, canbus):
     # initialize can parser
     self.CP = CP
+    self.CAM_LT = CAM_LaneTrack(0, -1, 0, 0, 0, 0, 0, 0, 0)
     
     self.car_fingerprint = CP.carFingerprint
     self.blinker_on = False
@@ -70,6 +116,18 @@ class CarState(object):
                          K=np.matrix([[0.12287673], [0.29666309]]))
     self.v_ego = 0.
 
+  def updateCam(self, cam_cp):
+    self.CAM_LT.line1      = cam_cp.vl["CAM_LANETRACK"]['LINE1']
+    self.CAM_LT.ctr        = cam_cp.vl["CAM_LANETRACK"]['CTR']
+    self.CAM_LT.line2      = cam_cp.vl["CAM_LANETRACK"]['LINE2']
+    self.CAM_LT.line_curve = cam_cp.vl["CAM_LANETRACK"]['LANE_CURVE']
+    self.CAM_LT.sig1       = cam_cp.vl["CAM_LANETRACK"]['SIG1']
+    self.CAM_LT.sig2       = cam_cp.vl["CAM_LANETRACK"]['SIG2']
+    self.CAM_LT.zero       = cam_cp.vl["CAM_LANETRACK"]['ZERO']
+    self.CAM_LT.sig3       = cam_cp.vl["CAM_LANETRACK"]['SIG3']
+    self.CAM_LT.chksum     = cam_cp.vl["CAM_LANETRACK"]['CHKSUM']
+
+  
   def update(self, pt_cp):
 
     self.can_valid = pt_cp.can_valid
@@ -107,4 +165,5 @@ class CarState(object):
     #self.brake_pressed = pt_cp.vl["PEDALS"]['BREAK_PEDAL_1'] == 1
 
     self.standstill = self.v_ego_raw < 0.01
-    
+
+

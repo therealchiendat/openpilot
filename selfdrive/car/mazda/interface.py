@@ -5,7 +5,7 @@ from selfdrive.config import Conversions as CV
 from selfdrive.controls.lib.drive_helpers import create_event, EventTypes as ET
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.car.mazda.values import DBC, CAR
-from selfdrive.car.mazda.carstate import CarState, get_powertrain_can_parser
+from selfdrive.car.mazda.carstate import CarState, get_powertrain_can_parser, get_cam_can_parser
 
 try:
   from selfdrive.car.mazda.carcontroller import CarController
@@ -17,6 +17,7 @@ class CanBus(object):
   def __init__(self):
     self.powertrain = 0
     self.obstacle = 1
+    self.cam = 1
 
 class CarInterface(object):
   def __init__(self, CP, sendcan=None):
@@ -31,6 +32,7 @@ class CarInterface(object):
     self.CS = CarState(CP, canbus)
     self.VM = VehicleModel(CP)
     self.pt_cp = get_powertrain_can_parser(CP, canbus)
+    self.cam_cp = get_cam_can_parser(CP, canbus)
 
     # sending if read only is False
     if sendcan is not None:
@@ -128,7 +130,10 @@ class CarInterface(object):
   def update(self, c):
 
     self.pt_cp.update(int(sec_since_boot() * 1e9), False)
+    self.cam_cp.update(int(sec_since_boot() * 1e9), False)
+    
     self.CS.update(self.pt_cp)
+    self.CS.updateCam(self.cam_cp)
 
     # create message
     ret = car.CarState.new_message()

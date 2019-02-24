@@ -38,6 +38,9 @@ class CarController(object):
     print(DBC)
     self.packer_pt = CANPacker(DBC[car_fingerprint]['pt'])
 
+    self.last_cam_ctr = -1
+    self.ctr = -1
+
   def update(self, sendcan, enabled, CS, frame, actuators):
     """ Controls thread """
 
@@ -87,7 +90,7 @@ class CarController(object):
           lineval = 8
         
         #counts from 0 to 15 then back to 0
-        idx = (frame / P.STEER_STEP) % 16
+        self.ctr = CS.CAM_LT.ctr #(frame / P.STEER_STEP) % 16
 
         # The checksum is calculated by subtracting all byte values across the msg from 249
         # however, the first byte is devided in half and are the two halves
@@ -96,10 +99,13 @@ class CarController(object):
         # the checksum for the msg b8 00 00 20 02 00 00 c4 would be
         #  hex: checksum = f9 - b - 8 - 00 - 00 - 20 - 02 - 00 - 00 = c4
         #  dec: chechsum = 249 - 11 - 8 -0 - 0 - 32 - 2  - 0 - 0   = 196
-        checksum = 249 - idx - (apply_steer >> 8) - (apply_steer & 0x0FF) - lineval - 32 - 2
-        
-      can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
-                                                        CS.CP.carFingerprint, idx, apply_steer, linebit, checksum))
+        checksum = 249 - self.ctr - (apply_steer >> 8) - (apply_steer & 0x0FF) - lineval - 32 - 2
 
-
+        if self.ctr != -1 and self.last_cam_ctr !=  self.ctr:
+          self.last_cam_ctr = self.ctr
+          can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
+                                                        CS.CP.carFingerprint, self.ctr, apply_steer, linebit, checksum))
+          
+          can_sends.append(mazdacan.create_lane_track(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LT))
+    
     sendcan.send(can_list_to_can_capnp(can_sends, msgtype='sendcan').to_bytes())
