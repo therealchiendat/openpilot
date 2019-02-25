@@ -11,7 +11,7 @@ from selfdrive.can.packer import CANPacker
 class CarControllerParams():
   def __init__(self, car_fingerprint):
     self.STEER_MAX = 256              # max_steer 2048
-    self.STEER_STEP = 6                # how often we update the steer cmd
+    self.STEER_STEP = 1    # 6        # how often we update the steer cmd
     self.STEER_DELTA_UP = 20           # torque increase per refresh
     self.STEER_DELTA_DOWN = 20         # torque decrease per refresh
     if car_fingerprint == CAR.CX5:
@@ -97,8 +97,8 @@ class CarController(object):
         # are subtracted separtaley. bytes 3 and 4 are constants at 32 and 2 repectively
         # for example
         # the checksum for the msg b8 00 00 20 02 00 00 c4 would be
-        #  hex: checksum = f9 - b - 8 - 00 - 00 - 20 - 02 - 00 - 00 = c4
-        #  dec: chechsum = 249 - 11 - 8 -0 - 0 - 32 - 2  - 0 - 0   = 196
+        #  hex: checksum = f9 - b - 0 - 00 - 00 - 20 - 02 - 00 - 00 = c4
+        #  dec: chechsum = 249 - 11 - 0 -0 - 0 - 32 - 2  - 0 - 0   = 196
         checksum = 249 - self.ctr - (apply_steer >> 8) - (apply_steer & 0x0FF) - lineval - 32 - 2
 
         if self.ctr != -1 and self.last_cam_ctr !=  self.ctr:
@@ -108,4 +108,4 @@ class CarController(object):
           
           can_sends.append(mazdacan.create_lane_track(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LT))
     
-    sendcan.send(can_list_to_can_capnp(can_sends, msgtype='sendcan').to_bytes())
+      sendcan.send(can_list_to_can_capnp(can_sends, msgtype='sendcan').to_bytes())

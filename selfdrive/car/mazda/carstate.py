@@ -72,7 +72,7 @@ def get_cam_can_parser(CP, canbus):
   
   checks = [
     # sig_address, frequency
-    ("CAM_LANETRACK", 60),
+    ("CAM_LANETRACK", 1),
   ]
 
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.cam)
