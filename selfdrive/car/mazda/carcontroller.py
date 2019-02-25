@@ -81,30 +81,37 @@ class CarController(object):
       if CS.v_ego_raw < 10:
           apply_steer = 0
 
-      lineval = 0
-      linebit = 0
+      lineval = 8
+      linebit = 1
 
       if self.car_fingerprint == CAR.CX5:
-        if CS.v_ego_raw < 10:
-          linebit = 1
-          lineval = 8
+        if CS.v_ego_raw > 10:
+          linebit = 0
+          lineval = 0
         
         #counts from 0 to 15 then back to 0
         self.ctr = CS.CAM_LT.ctr #(frame / P.STEER_STEP) % 16
 
-        # The checksum is calculated by subtracting all byte values across the msg from 249
-        # however, the first byte is devided in half and are the two halves
-        # are subtracted separtaley. bytes 3 and 4 are constants at 32 and 2 repectively
-        # for example
-        # the checksum for the msg b8 00 00 20 02 00 00 c4 would be
-        #  hex: checksum = f9 - b - 0 - 00 - 00 - 20 - 02 - 00 - 00 = c4
-        #  dec: chechsum = 249 - 11 - 0 -0 - 0 - 32 - 2  - 0 - 0   = 196
-        checksum = 249 - self.ctr - (apply_steer >> 8) - (apply_steer & 0x0FF) - lineval - 32 - 2
-
-        if self.ctr != -1 and self.last_cam_ctr !=  self.ctr:
+        if self.ctr != -1 and self.last_cam_ctr != self.ctr:
           self.last_cam_ctr = self.ctr
+          e1 = 0
+          e2 = 0
+          if CS.CAM_LT.ctr == 0 and CS.CAM_LT.chksum == 0xff:
+            e1 = 1
+            e2 = 1
+
+          # The checksum is calculated by subtracting all byte values across the msg from 249
+          # however, the first byte is devided in half and are the two halves
+          # are subtracted separtaley. bytes 3 and 4 are constants at 32 and 2 repectively
+          # for example
+          # the checksum for the msg b8 00 00 20 02 00 00 c4 would be
+          #  hex: checksum = f9 - b - 00 - 00 - 08 - 20 - 02 - 00 - 00 = c4
+          #  dec: chechsum = 249 - 11 - 0 - 0 - 8 - 32 - 2  - 0 - 0   = 196
+          checksum = 249 - self.ctr - (apply_steer >> 8) - (apply_steer & 0x0FF) - lineval - 32 - 2 - e1 - (e2 << 6)
+
+
           can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
-                                                        CS.CP.carFingerprint, self.ctr, apply_steer, linebit, checksum))
+                                                            CS.CP.carFingerprint, self.ctr, apply_steer, linebit, e1, e2, checksum))
           
           can_sends.append(mazdacan.create_lane_track(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LT))
     

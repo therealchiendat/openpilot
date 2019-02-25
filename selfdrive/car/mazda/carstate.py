@@ -25,16 +25,6 @@ def get_powertrain_can_parser(CP, canbus):
     ("DRIVER_SEATBELT", "SEATBELT", 0),
     ("FL", "DOORS", 0),
     ("GAS_PEDAL_PRESSED", "CRZ_EVENTS", 0),
-
-    ("LINE1",      "CAM_LANETRACK", 0),
-    ("CTR",        "CAM_LANETRACK", -1),
-    ("LINE2",      "CAM_LANETRACK", 0),
-    ("LANE_CURVE", "CAM_LANETRACK", 0),
-    ("SIG1",       "CAM_LANETRACK", 0),
-    ("SIG2",       "CAM_LANETRACK", 0),
-    ("ZERO",       "CAM_LANETRACK", 0),
-    ("SIG3",       "CAM_LANETRACK", 0),
-    ("CHKSUM",     "CAM_LANETRACK", 0),
   ]
   
   checks = [
@@ -50,7 +40,6 @@ def get_powertrain_can_parser(CP, canbus):
     ("SEATBELT", 100),
     ("DOORS", 100),
     ("GEAR", 50),
-    ("CAM_LANETRACK", 60),
   ]
 
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.powertrain)
@@ -72,7 +61,7 @@ def get_cam_can_parser(CP, canbus):
   
   checks = [
     # sig_address, frequency
-    ("CAM_LANETRACK", 1),
+    ("CAM_LANETRACK", 5),
   ]
 
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.cam)
