@@ -57,11 +57,21 @@ def get_cam_can_parser(CP, canbus):
     ("ZERO",       "CAM_LANETRACK", 0),
     ("SIG3",       "CAM_LANETRACK", 0),
     ("CHKSUM",     "CAM_LANETRACK", 0),
+
+    ("LKAS_REQUEST",     "CAM_LKAS", 0),
+    ("CTR",              "CAM_LKAS", 0),
+    ("ERR_BIT_1",        "CAM_LKAS", 0),
+    ("LINE_NOT_VISIBLE", "CAM_LKAS", 0),
+    ("BIT_1",            "CAM_LKAS", 0),
+    ("ERR_BIT_2",        "CAM_LKAS", 0),
+    ("BIT_2",            "CAM_LKAS", 0),
+    ("CHKSUM",           "CAM_LKAS", 0),
   ]
   
   checks = [
     # sig_address, frequency
     ("CAM_LANETRACK", 5),
+    ("CAM_LKAS",      5),
   ]
 
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.cam)
@@ -78,11 +88,23 @@ class CAM_LaneTrack(object):
     self.sig3 = s3
     self.chksum = ck
 
+class CAM_LKAS(object):
+  def __init__(self, lkas, ctr, er1, lnv, b1, er2, b2, ck):
+    self.lkas = lkas
+    self.ctr = ctr
+    self.err1 = er1
+    self.lnv = lnv
+    self.bit1 = b1
+    self.err2 = er2
+    self.bit2 = b2
+    self.chksum = ck
+
 class CarState(object):
   def __init__(self, CP, canbus):
     # initialize can parser
     self.CP = CP
     self.CAM_LT = CAM_LaneTrack(0, -1, 0, 0, 0, 0, 0, 0, 0)
+    self.CAM_LKAS = CAM_LKAS(0, -1, 0, 0, 0, 0, 0, 0)
     
     self.car_fingerprint = CP.carFingerprint
     self.blinker_on = False
@@ -115,6 +137,15 @@ class CarState(object):
     self.CAM_LT.zero       = cam_cp.vl["CAM_LANETRACK"]['ZERO']
     self.CAM_LT.sig3       = cam_cp.vl["CAM_LANETRACK"]['SIG3']
     self.CAM_LT.chksum     = cam_cp.vl["CAM_LANETRACK"]['CHKSUM']
+
+    self.CAM_LKAS.lkas    = cam_cp.vl["CAM_LKAS"]['LKAS_REQUEST']
+    self.CAM_LKAS.ctr     = cam_cp.vl["CAM_LKAS"]['CTR']
+    self.CAM_LKAS.err1    = cam_cp.vl["CAM_LKAS"]['ERR_BIT_1']
+    self.CAM_LKAS.lnv     = cam_cp.vl["CAM_LKAS"]['LINE_NOT_VISIBLE']
+    self.CAM_LKAS.bit1    = cam_cp.vl["CAM_LKAS"]['BIT_1']
+    self.CAM_LKAS.err2    = cam_cp.vl["CAM_LKAS"]['ERR_BIT_2']
+    self.CAM_LKAS.bit2    = cam_cp.vl["CAM_LKAS"]['BIT_2']
+    self.CAM_LKAS.chksum  = cam_cp.vl["CAM_LKAS"]['CHKSUM']
 
   
   def update(self, pt_cp):

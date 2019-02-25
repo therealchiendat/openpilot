@@ -39,7 +39,6 @@ class CarController(object):
     self.packer_pt = CANPacker(DBC[car_fingerprint]['pt'])
 
     self.last_cam_ctr = -1
-    self.ctr = -1
 
   def update(self, sendcan, enabled, CS, frame, actuators):
     """ Controls thread """
@@ -90,10 +89,10 @@ class CarController(object):
           lineval = 0
         
         #counts from 0 to 15 then back to 0
-        self.ctr = CS.CAM_LT.ctr #(frame / P.STEER_STEP) % 16
+        ctr = CS.CAM_LKAS.ctr #(frame / P.STEER_STEP) % 16
 
-        if self.ctr != -1 and self.last_cam_ctr != self.ctr:
-          self.last_cam_ctr = self.ctr
+        if ctr != -1 and self.last_cam_ctr != ctr:
+          self.last_cam_ctr = ctr
           e1 = 0
           e2 = 0
           if CS.CAM_LT.ctr == 0 and CS.CAM_LT.chksum == 0xff:
@@ -107,11 +106,17 @@ class CarController(object):
           # the checksum for the msg b8 00 00 20 02 00 00 c4 would be
           #  hex: checksum = f9 - b - 00 - 00 - 08 - 20 - 02 - 00 - 00 = c4
           #  dec: chechsum = 249 - 11 - 0 - 0 - 8 - 32 - 2  - 0 - 0   = 196
-          checksum = 249 - self.ctr - (apply_steer >> 8) - (apply_steer & 0x0FF) - lineval - 32 - 2 - e1 - (e2 << 6)
+          checksum = 249 - ctr - (apply_steer >> 8) - (apply_steer & 0x0FF) - lineval - 32 - 2 - e1 - (e2 << 6)
 
+          #can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
+          #                                                  CS.CP.carFingerprint, ctr, apply_steer, linebit, 1, 1, e1, e2, checksum))
 
           can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
-                                                            CS.CP.carFingerprint, self.ctr, apply_steer, linebit, e1, e2, checksum))
+                                                            CS.CP.carFingerprint, CS.CAM_LKAS.ctr,
+                                                            CS.CAM_LKAS.lkas, CS.CAM_LKAS.lnv,
+                                                            CS.CAM_LKAS.bit1, CS.CAM_LKAS.bit2,
+                                                            CS.CAM_LKAS.err1, CS.CAM_LKAS.err2,
+                                                            CS.CAM_LKAS.checksum))
           
           can_sends.append(mazdacan.create_lane_track(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LT))
     
