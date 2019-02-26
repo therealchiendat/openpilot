@@ -11,7 +11,7 @@ from selfdrive.can.packer import CANPacker
 class CarControllerParams():
   def __init__(self, car_fingerprint):
     self.STEER_MAX = 256              # max_steer 2048
-    self.STEER_STEP = 1    # 6        # how often we update the steer cmd
+    self.STEER_STEP = 3    # 6        # how often we update the steer cmd
     self.STEER_DELTA_UP = 20           # torque increase per refresh
     self.STEER_DELTA_DOWN = 20         # torque decrease per refresh
     if car_fingerprint == CAR.CX5:
@@ -91,7 +91,7 @@ class CarController(object):
         #counts from 0 to 15 then back to 0
         ctr = CS.CAM_LKAS.ctr #(frame / P.STEER_STEP) % 16
 
-        if ctr != -1 and self.last_cam_ctr != ctr:
+        if ctr != -1 and self.last_cam_ctr != ctr and ctr == CS.CAM_LT.ctr:
           self.last_cam_ctr = ctr
           e1 = 0
           e2 = 0
