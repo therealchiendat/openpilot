@@ -116,7 +116,7 @@ class CarController(object):
                                                             CS.CAM_LKAS.lkas, CS.CAM_LKAS.lnv,
                                                             CS.CAM_LKAS.bit1, CS.CAM_LKAS.bit2,
                                                             CS.CAM_LKAS.err1, CS.CAM_LKAS.err2,
-                                                            CS.CAM_LKAS.checksum))
+                                                            CS.CAM_LKAS.chksum))
           
           can_sends.append(mazdacan.create_lane_track(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LT))
     
