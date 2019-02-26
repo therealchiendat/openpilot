@@ -59,7 +59,7 @@ def get_cam_can_parser(CP, canbus):
     ("CHKSUM",     "CAM_LANETRACK", 0),
 
     ("LKAS_REQUEST",     "CAM_LKAS", 0),
-    ("CTR",              "CAM_LKAS", 0),
+    ("CTR",              "CAM_LKAS", -1),
     ("ERR_BIT_1",        "CAM_LKAS", 0),
     ("LINE_NOT_VISIBLE", "CAM_LKAS", 0),
     ("BIT_1",            "CAM_LKAS", 0),
