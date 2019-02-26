@@ -132,8 +132,7 @@ class CarInterface(object):
     self.pt_cp.update(int(sec_since_boot() * 1e9), False)
     self.cam_cp.update(int(sec_since_boot() * 1e9), False)
     
-    self.CS.update(self.pt_cp)
-    self.CS.updateCam(self.cam_cp)
+    self.CS.update(self.pt_cp, self.cam_cp)
 
     # create message
     ret = car.CarState.new_message()

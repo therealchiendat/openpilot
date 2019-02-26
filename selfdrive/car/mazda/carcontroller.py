@@ -2,7 +2,7 @@ from common.numpy_fast import clip, interp
 from common.realtime import sec_since_boot
 from selfdrive.config import Conversions as CV
 from selfdrive.boardd.boardd import can_list_to_can_capnp
-from selfdrive.car.mazda.carstate import CarState, get_powertrain_can_parser
+from selfdrive.car.mazda.carstate import CarState, get_powertrain_can_parser, get_cam_can_parser
 from selfdrive.car.mazda import mazdacan
 from selfdrive.car.mazda.values import CAR, DBC
 from selfdrive.can.packer import CANPacker
@@ -11,7 +11,7 @@ from selfdrive.can.packer import CANPacker
 class CarControllerParams():
   def __init__(self, car_fingerprint):
     self.STEER_MAX = 256              # max_steer 2048
-    self.STEER_STEP = 3    # 6        # how often we update the steer cmd
+    self.STEER_STEP = 2    # 6        # how often we update the steer cmd
     self.STEER_DELTA_UP = 20           # torque increase per refresh
     self.STEER_DELTA_DOWN = 20         # torque decrease per refresh
     if car_fingerprint == CAR.CX5:
@@ -72,51 +72,25 @@ class CarController(object):
       self.apply_steer_last = apply_steer
       
       
-      lkas_enabled = enabled and not CS.steer_not_allowed
+      lkas_enabled = enabled and not CS.steer_not_allowed and (CS.v_ego_raw > 10)
 
       if not lkas_enabled:
           apply_steer = 0
 
-      if CS.v_ego_raw < 10:
-          apply_steer = 0
-
-      lineval = 8
-      linebit = 1
-
       if self.car_fingerprint == CAR.CX5:
-        if CS.v_ego_raw > 10:
-          linebit = 0
-          lineval = 0
-        
         #counts from 0 to 15 then back to 0
         ctr = CS.CAM_LKAS.ctr #(frame / P.STEER_STEP) % 16
 
         if ctr != -1 and self.last_cam_ctr != ctr and ctr == CS.CAM_LT.ctr:
           self.last_cam_ctr = ctr
-          e1 = 0
-          e2 = 0
-          if CS.CAM_LT.ctr == 0 and CS.CAM_LT.chksum == 0xff:
-            e1 = 1
-            e2 = 1
-
-          # The checksum is calculated by subtracting all byte values across the msg from 249
-          # however, the first byte is devided in half and are the two halves
-          # are subtracted separtaley. bytes 3 and 4 are constants at 32 and 2 repectively
-          # for example
-          # the checksum for the msg b8 00 00 20 02 00 00 c4 would be
-          #  hex: checksum = f9 - b - 00 - 00 - 08 - 20 - 02 - 00 - 00 = c4
-          #  dec: chechsum = 249 - 11 - 0 - 0 - 8 - 32 - 2  - 0 - 0   = 196
-          checksum = 249 - ctr - (apply_steer >> 8) - (apply_steer & 0x0FF) - lineval - 32 - 2 - e1 - (e2 << 6)
+          line_not_visible = CS.CAM_LKAS.lnv
+          e1 = CS.CAM_LKAS.err1
+          e2 = CS.CAM_LKAS.err2
 
           #can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
-          #                                                  CS.CP.carFingerprint, ctr, apply_steer, linebit, 1, 1, e1, e2, checksum))
+          #                                                  CS.CP.carFingerprint, ctr, apply_steer, line_not_visible, 1, 1, e1, e2))
 
-          can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
-                                                            CS.CP.carFingerprint, CS.CAM_LKAS.ctr,
-                                                            CS.CAM_LKAS.lkas, CS.CAM_LKAS.lnv,
-                                                            CS.CAM_LKAS.bit1, CS.CAM_LKAS.bit2,
-                                                            CS.CAM_LKAS.err1, CS.CAM_LKAS.err2,
-                                                            CS.CAM_LKAS.chksum))
+          can_sends.append(mazdacan.create_lkas_msg(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LKAS))
           
           can_sends.append(mazdacan.create_lane_track(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LT))
     

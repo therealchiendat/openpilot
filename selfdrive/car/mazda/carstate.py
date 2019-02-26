@@ -70,8 +70,8 @@ def get_cam_can_parser(CP, canbus):
   
   checks = [
     # sig_address, frequency
-    ("CAM_LANETRACK", 15),
-    ("CAM_LKAS",      15),
+    ("CAM_LKAS",      13),
+    ("CAM_LANETRACK", 13),
   ]
 
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.cam)
@@ -88,7 +88,7 @@ class CAM_LaneTrack(object):
     self.sig3 = s3
     self.chksum = ck
 
-class CAM_LKAS(object):
+class CAM_LaneKAS(object):
   def __init__(self, lkas, ctr, er1, lnv, b1, er2, b2, ck):
     self.lkas = lkas
     self.ctr = ctr
@@ -104,7 +104,7 @@ class CarState(object):
     # initialize can parser
     self.CP = CP
     self.CAM_LT = CAM_LaneTrack(0, -1, 0, 0, 0, 0, 0, 0, 0)
-    self.CAM_LKAS = CAM_LKAS(0, -1, 0, 0, 0, 0, 0, 0)
+    self.CAM_LKAS = CAM_LaneKAS(0, -1, 0, 0, 0, 0, 0, 0)
     
     self.car_fingerprint = CP.carFingerprint
     self.blinker_on = False
@@ -127,32 +127,7 @@ class CarState(object):
                          K=np.matrix([[0.12287673], [0.29666309]]))
     self.v_ego = 0.
 
-  def updateCam(self, cam_cp):
-    if self.CAM_LT.ctr != cam_cp.vl["CAM_LANETRACK"]['CTR'] and cam_cp.vl["CAM_LANETRACK"]['CTR'] == cam_cp.vl["CAM_LKAS"]['CTR']:
-      self.CAM_LT.ctr        = cam_cp.vl["CAM_LANETRACK"]['CTR']
-
-      self.CAM_LT.line1      = cam_cp.vl["CAM_LANETRACK"]['LINE1']
-      self.CAM_LT.line2      = cam_cp.vl["CAM_LANETRACK"]['LINE2']
-      self.CAM_LT.line_curve = cam_cp.vl["CAM_LANETRACK"]['LANE_CURVE']
-      self.CAM_LT.sig1       = cam_cp.vl["CAM_LANETRACK"]['SIG1']
-      self.CAM_LT.sig2       = cam_cp.vl["CAM_LANETRACK"]['SIG2']
-      self.CAM_LT.zero       = cam_cp.vl["CAM_LANETRACK"]['ZERO']
-      self.CAM_LT.sig3       = cam_cp.vl["CAM_LANETRACK"]['SIG3']
-      self.CAM_LT.chksum     = cam_cp.vl["CAM_LANETRACK"]['CHKSUM']
-
-      self.CAM_LKAS.lkas    = cam_cp.vl["CAM_LKAS"]['LKAS_REQUEST']
-      self.CAM_LKAS.err1    = cam_cp.vl["CAM_LKAS"]['ERR_BIT_1']
-      self.CAM_LKAS.lnv     = cam_cp.vl["CAM_LKAS"]['LINE_NOT_VISIBLE']
-      self.CAM_LKAS.bit1    = cam_cp.vl["CAM_LKAS"]['BIT_1']
-      self.CAM_LKAS.err2    = cam_cp.vl["CAM_LKAS"]['ERR_BIT_2']
-      self.CAM_LKAS.bit2    = cam_cp.vl["CAM_LKAS"]['BIT_2']
-      self.CAM_LKAS.chksum  = cam_cp.vl["CAM_LKAS"]['CHKSUM']
-
-
-      self.CAM_LKAS.ctr     = cam_cp.vl["CAM_LKAS"]['CTR']
-
-  
-  def update(self, pt_cp):
+  def update(self, pt_cp, cam_cp):
 
     self.can_valid = pt_cp.can_valid
     self.can_valid = True
@@ -190,4 +165,25 @@ class CarState(object):
 
     self.standstill = self.v_ego_raw < 0.01
 
+    if self.CAM_LT.ctr != cam_cp.vl["CAM_LANETRACK"]['CTR'] and cam_cp.vl["CAM_LANETRACK"]['CTR'] == cam_cp.vl["CAM_LKAS"]['CTR']:
+      self.CAM_LT.ctr        = cam_cp.vl["CAM_LANETRACK"]['CTR']
 
+      self.CAM_LT.line1      = cam_cp.vl["CAM_LANETRACK"]['LINE1']
+      self.CAM_LT.line2      = cam_cp.vl["CAM_LANETRACK"]['LINE2']
+      self.CAM_LT.line_curve = cam_cp.vl["CAM_LANETRACK"]['LANE_CURVE']
+      self.CAM_LT.sig1       = cam_cp.vl["CAM_LANETRACK"]['SIG1']
+      self.CAM_LT.sig2       = cam_cp.vl["CAM_LANETRACK"]['SIG2']
+      self.CAM_LT.zero       = cam_cp.vl["CAM_LANETRACK"]['ZERO']
+      self.CAM_LT.sig3       = cam_cp.vl["CAM_LANETRACK"]['SIG3']
+      self.CAM_LT.chksum     = cam_cp.vl["CAM_LANETRACK"]['CHKSUM']
+
+      self.CAM_LKAS.lkas    = cam_cp.vl["CAM_LKAS"]['LKAS_REQUEST']
+      self.CAM_LKAS.err1    = cam_cp.vl["CAM_LKAS"]['ERR_BIT_1']
+      self.CAM_LKAS.lnv     = cam_cp.vl["CAM_LKAS"]['LINE_NOT_VISIBLE']
+      self.CAM_LKAS.bit1    = cam_cp.vl["CAM_LKAS"]['BIT_1']
+      self.CAM_LKAS.err2    = cam_cp.vl["CAM_LKAS"]['ERR_BIT_2']
+      self.CAM_LKAS.bit2    = cam_cp.vl["CAM_LKAS"]['BIT_2']
+      self.CAM_LKAS.chksum  = cam_cp.vl["CAM_LKAS"]['CHKSUM']
+
+
+      self.CAM_LKAS.ctr     = cam_cp.vl["CAM_LKAS"]['CTR']
