@@ -37,8 +37,8 @@ def get_powertrain_can_parser(CP, canbus):
     ("CRZ_CTRL", 20),
     ("CRZ_EVENTS", 50),
     ("PEDALS", 20),
-    ("SEATBELT", 100),
-    ("DOORS", 100),
+    #("SEATBELT", 100),
+    #("DOORS", 100),
     ("GEAR", 50),
   ]
 
@@ -165,8 +165,8 @@ class CarState(object):
 
     self.standstill = self.v_ego_raw < 0.01
 
-    self.door_closed = not cp.vl["DOORS"]['FL']
-    self.seatbelt = not cp.vl["SEATBELT"]['DRIVER_SEATBELT']
+    self.door_all_closed = not pt_cp.vl["DOORS"]['FL']
+    self.seatbelt = not pt_cp.vl["SEATBELT"]['DRIVER_SEATBELT']
 
     if self.CAM_LT.ctr != cam_cp.vl["CAM_LANETRACK"]['CTR'] and cam_cp.vl["CAM_LANETRACK"]['CTR'] == cam_cp.vl["CAM_LKAS"]['CTR']:
       self.CAM_LT.ctr        = cam_cp.vl["CAM_LANETRACK"]['CTR']

@@ -183,7 +183,7 @@ class CarInterface(object):
     ret.leftBlinker = bool(self.CS.left_blinker_on)
     ret.rightBlinker = bool(self.CS.right_blinker_on)
 
-    ret.doorOpen = not self.CS.door_closed
+    ret.doorOpen = not self.CS.door_all_closed
     ret.seatbeltUnlatched = not self.CS.seatbelt
 
 
@@ -200,6 +200,11 @@ class CarInterface(object):
     if not self.CS.acc_active:
       events.append(create_event('pcmDisable', [ET.USER_DISABLE]))
 
+    if ret.doorOpen:
+      events.append(create_event('doorOpen', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
+    if ret.seatbeltUnlatched:
+      events.append(create_event('seatbeltNotLatched', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
+
     # handle button presses
     for b in ret.buttonEvents:
       # do enable on both accel and decel buttons
@@ -208,7 +213,7 @@ class CarInterface(object):
       # do disable on button down
       if b.type == "cancel" and b.pressed:
         events.append(create_event('buttonCancel', [ET.USER_DISABLE]))
-		
+
     ret.events = events
 
     # update previous brake/gas pressed
