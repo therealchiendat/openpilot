@@ -156,11 +156,6 @@ class CarInterface(object):
     # timer resets when the user uses the steering wheel.
     ret.steeringTorque = self.CS.steer_torque_driver
 
-    # cruise state
-    ret.cruiseState.available = bool(self.CS.main_on)
-    ret.leftBlinker = self.CS.left_blinker_on
-    ret.rightBlinker = self.CS.right_blinker_on
-
 
     buttonEvents = []
 
@@ -180,6 +175,16 @@ class CarInterface(object):
     be = car.CarState.ButtonEvent.new_message()
     be.type = 'accelCruise'
     buttonEvents.append(be)
+
+    ret.buttonEvents = buttonEvents
+
+    # cruise state
+    ret.cruiseState.available = bool(self.CS.main_on)
+    ret.leftBlinker = bool(self.CS.left_blinker_on)
+    ret.rightBlinker = bool(self.CS.right_blinker_on)
+
+    ret.doorOpen = not self.CS.door_closed
+    ret.seatbeltUnlatched = not self.CS.seatbelt
 
 
     events = []
