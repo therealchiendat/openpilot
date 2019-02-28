@@ -1,14 +1,26 @@
 from selfdrive.car.mazda.values import CAR, DBC
 
 def create_steering_control(packer, bus, car_fingerprint, ctr, lkas, lnv, b1, b2, err1, err2):
-  # The checksum is calculated by subtracting all byte values across the msg from 249
+  # The checksum is calculated by subtracting all byte values across the msg from 241
   # however, the first byte is devided in half and are the two halves
-  # are subtracted separtaley. bytes 3 and 4 are constants at 32 and 2 repectively
-  # for example
+  # are subtracted separtaley the second half must be subtracted from 8 first.
+  # bytes 3 and 4 are constants at 32 and 2 repectively
+  # for example:
   # the checksum for the msg b8 00 00 20 02 00 00 c4 would be
-  #  hex: checksum = f9 - b - 00 - 00 - 08 - 20 - 02 - 00 - 00 = c4
-  #  dec: chechsum = 249 - 11 - 0 - 0 - 8 - 32 - 2  - 0 - 0   = 196
-  csum = 249 - ctr - (lkas >> 8) - (lkas & 0x0FF) - lnv - 32 - 2 - err1 - (err2 << 6)
+  #  hex: checksum = f1 - b - (8-8) - 00 - 20 - 02 - 00 - 00 = c4
+  #  dec: chechsum = 241 - 11 - (8-8) - 0 - 32 - 2  - 0 - 0   = 196
+
+  tmp = lkas + 2048
+
+  lkasl = tmp & 0xFF
+  lkash = tmp >> 8
+
+  csum = 241 - ctr - (lkash - 8) - lkasl - (lnv << 3) - (b1 << 5)  - (b2 << 1)
+
+  if csum < 0:
+      csum = csum + 256
+
+  csum = csum % 256
 
   if car_fingerprint == CAR.CX5:
     values = {

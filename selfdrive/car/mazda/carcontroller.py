@@ -10,10 +10,10 @@ from selfdrive.can.packer import CANPacker
 
 class CarControllerParams():
   def __init__(self, car_fingerprint):
-    self.STEER_MAX = 256              # max_steer 2048
-    self.STEER_STEP = 1    # 6        # how often we update the steer cmd
-    self.STEER_DELTA_UP = 20           # torque increase per refresh
-    self.STEER_DELTA_DOWN = 20         # torque decrease per refresh
+    self.STEER_MAX = 1000              # max_steer 2048
+    self.STEER_STEP = 6    # 6        # how often we update the steer cmd
+    self.STEER_DELTA_UP = 10           # torque increase per refresh
+    self.STEER_DELTA_DOWN = 25         # torque decrease per refresh
     if car_fingerprint == CAR.CX5:
       self.STEER_DRIVER_ALLOWANCE = 5000   # allowed driver torque before start limiting
     else:
@@ -72,7 +72,7 @@ class CarController(object):
       self.apply_steer_last = apply_steer
       
       
-      lkas_enabled = enabled and not CS.steer_not_allowed and (CS.v_ego_raw > 10)
+      lkas_enabled = enabled and not CS.steer_not_allowed
 
       if not lkas_enabled:
           apply_steer = 0
@@ -83,14 +83,19 @@ class CarController(object):
 
         if ctr != -1 and self.last_cam_ctr != ctr:
           self.last_cam_ctr = ctr
-          line_not_visible = CS.CAM_LKAS.lnv
+          #line_not_visible = CS.CAM_LKAS.lnv
+          if CS.v_ego_raw > 4:
+            line_not_visible = 0
+          else:
+            line_not_visible = 1
+
           e1 = CS.CAM_LKAS.err1
           e2 = CS.CAM_LKAS.err2
 
-          #can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
-          #                                                  CS.CP.carFingerprint, ctr, apply_steer, line_not_visible, 1, 1, e1, e2))
+          can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
+                                                            CS.CP.carFingerprint, ctr, apply_steer, line_not_visible, 1, 1, e1, e2))
 
-          can_sends.append(mazdacan.create_lkas_msg(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LKAS))
+          #can_sends.append(mazdacan.create_lkas_msg(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LKAS))
           
           #can_sends.append(mazdacan.create_lane_track(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LT))
     
