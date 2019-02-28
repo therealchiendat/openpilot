@@ -172,9 +172,9 @@ class CarInterface(object):
       be.pressed = self.CS.right_blinker_on
       buttonEvents.append(be)
 
-    be = car.CarState.ButtonEvent.new_message()
-    be.type = 'accelCruise'
-    buttonEvents.append(be)
+    #be = car.CarState.ButtonEvent.new_message()
+    #be.type = 'accelCruise'
+    #buttonEvents.append(be)
 
     ret.buttonEvents = buttonEvents
 

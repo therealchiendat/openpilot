@@ -168,17 +168,18 @@ class CarState(object):
     self.door_all_closed = not pt_cp.vl["DOORS"]['FL']
     self.seatbelt =  pt_cp.vl["SEATBELT"]['DRIVER_SEATBELT']
 
-    if self.CAM_LT.ctr != cam_cp.vl["CAM_LANETRACK"]['CTR'] and cam_cp.vl["CAM_LANETRACK"]['CTR'] == cam_cp.vl["CAM_LKAS"]['CTR']:
-      self.CAM_LT.ctr        = cam_cp.vl["CAM_LANETRACK"]['CTR']
+    #if self.CAM_LT.ctr != cam_cp.vl["CAM_LANETRACK"]['CTR'] and cam_cp.vl["CAM_LANETRACK"]['CTR'] == cam_cp.vl["CAM_LKAS"]['CTR']:
 
-      self.CAM_LT.line1      = cam_cp.vl["CAM_LANETRACK"]['LINE1']
-      self.CAM_LT.line2      = cam_cp.vl["CAM_LANETRACK"]['LINE2']
-      self.CAM_LT.line_curve = cam_cp.vl["CAM_LANETRACK"]['LANE_CURVE']
-      self.CAM_LT.sig1       = cam_cp.vl["CAM_LANETRACK"]['SIG1']
-      self.CAM_LT.sig2       = cam_cp.vl["CAM_LANETRACK"]['SIG2']
-      self.CAM_LT.zero       = cam_cp.vl["CAM_LANETRACK"]['ZERO']
-      self.CAM_LT.sig3       = cam_cp.vl["CAM_LANETRACK"]['SIG3']
-      self.CAM_LT.chksum     = cam_cp.vl["CAM_LANETRACK"]['CHKSUM']
+    if self.CAM_LKAS.ctr != cam_cp.vl["CAM_LKAS"]['CTR']:
+      #self.CAM_LT.ctr        = cam_cp.vl["CAM_LANETRACK"]['CTR']
+      #self.CAM_LT.line1      = cam_cp.vl["CAM_LANETRACK"]['LINE1']
+      #self.CAM_LT.line2      = cam_cp.vl["CAM_LANETRACK"]['LINE2']
+      #self.CAM_LT.line_curve = cam_cp.vl["CAM_LANETRACK"]['LANE_CURVE']
+      #self.CAM_LT.sig1       = cam_cp.vl["CAM_LANETRACK"]['SIG1']
+      #self.CAM_LT.sig2       = cam_cp.vl["CAM_LANETRACK"]['SIG2']
+      #self.CAM_LT.zero       = cam_cp.vl["CAM_LANETRACK"]['ZERO']
+      #self.CAM_LT.sig3       = cam_cp.vl["CAM_LANETRACK"]['SIG3']
+      #self.CAM_LT.chksum     = cam_cp.vl["CAM_LANETRACK"]['CHKSUM']
 
       self.CAM_LKAS.lkas    = cam_cp.vl["CAM_LKAS"]['LKAS_REQUEST']
       self.CAM_LKAS.err1    = cam_cp.vl["CAM_LKAS"]['ERR_BIT_1']

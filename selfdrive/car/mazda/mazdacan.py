@@ -8,7 +8,7 @@ def create_steering_control(packer, bus, car_fingerprint, ctr, lkas, lnv, b1, b2
   # the checksum for the msg b8 00 00 20 02 00 00 c4 would be
   #  hex: checksum = f9 - b - 00 - 00 - 08 - 20 - 02 - 00 - 00 = c4
   #  dec: chechsum = 249 - 11 - 0 - 0 - 8 - 32 - 2  - 0 - 0   = 196
-  csum = 249 - ctr - (apply_steer >> 8) - (apply_steer & 0x0FF) - lineval - 32 - 2 - e1 - (e2 << 6)
+  csum = 249 - ctr - (lkas >> 8) - (lkas & 0x0FF) - lnv - 32 - 2 - err1 - (err2 << 6)
 
   if car_fingerprint == CAR.CX5:
     values = {

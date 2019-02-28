@@ -11,7 +11,7 @@ from selfdrive.can.packer import CANPacker
 class CarControllerParams():
   def __init__(self, car_fingerprint):
     self.STEER_MAX = 256              # max_steer 2048
-    self.STEER_STEP = 2    # 6        # how often we update the steer cmd
+    self.STEER_STEP = 1    # 6        # how often we update the steer cmd
     self.STEER_DELTA_UP = 20           # torque increase per refresh
     self.STEER_DELTA_DOWN = 20         # torque decrease per refresh
     if car_fingerprint == CAR.CX5:
@@ -81,7 +81,7 @@ class CarController(object):
         #counts from 0 to 15 then back to 0
         ctr = CS.CAM_LKAS.ctr #(frame / P.STEER_STEP) % 16
 
-        if ctr != -1 and self.last_cam_ctr != ctr and ctr == CS.CAM_LT.ctr:
+        if ctr != -1 and self.last_cam_ctr != ctr:
           self.last_cam_ctr = ctr
           line_not_visible = CS.CAM_LKAS.lnv
           e1 = CS.CAM_LKAS.err1
@@ -92,6 +92,6 @@ class CarController(object):
 
           can_sends.append(mazdacan.create_lkas_msg(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LKAS))
           
-          can_sends.append(mazdacan.create_lane_track(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LT))
+          #can_sends.append(mazdacan.create_lane_track(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LT))
     
       sendcan.send(can_list_to_can_capnp(can_sends, msgtype='sendcan').to_bytes())
