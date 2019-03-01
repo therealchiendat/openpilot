@@ -96,10 +96,13 @@ BO_ 576 STEER_TORQUE: 8 XXX
 
 BO_ 577 STEER_RATE: 8 XXX
  SG_ NEW_SIGNAL_2 : 63|8@0+ (1,0) [0|255] "" XXX
- SG_ NEW_SIGNAL_4 : 50|1@1+ (1,0) [0|3] "" XXX
  SG_ NEW_SIGNAL_3 : 52|1@0+ (1,0) [0|3] "" XXX
- SG_ CTR : 7|4@0+ (1,0) [0|15] "" XXX
  SG_ STEER_ANGLE_RATE : 23|16@0+ (0.25,-8192) [0|1] "deg/s" XXX
+ SG_ CTR : 7|4@0+ (1,0) [0|15] "" XXX
+ SG_ LKAS_REQUEST : 3|12@0+ (1,-2048) [0|15] "" XXX
+ SG_ LKAS_CROPPED : 39|12@0+ (1,-2048) [0|255] "" XXX
+ SG_ NEW_SIGNAL_4 : 50|1@1+ (1,0) [0|3] "" XXX
+ SG_ NEW_SIGNAL_1 : 51|1@0+ (1,0) [0|1] "" XXX
 
 BO_ 582 CAM_LANEMAYBE: 8 XXX
  SG_ NEW_SIGNAL_4 : 40|8@1+ (1,0) [0|127] "" XXX
@@ -111,22 +114,22 @@ BO_ 541 CAM_EMPTY: 8 XXX
 
 BO_ 605 CAM_PEDESTRIAN: 8 XXX
  SG_ CTR : 17|4@0+ (1,0) [0|255] "" XXX
- SG_ RST_CTR : 23|6@0+ (1,0) [0|63] "" XXX
- SG_ PED_WARNING : 9|1@1+ (1,0) [0|255] "" XXX
- SG_ PED_BRAKE : 1|3@1+ (1,0) [0|7] "" XXX
- SG_ signal1 : 26|4@1+ (1,0) [0|31] "" XXX
  SG_ AEB_NOT_ENGAGED : 13|1@0+ (1,0) [0|1] "" XXX
+ SG_ PED_WARNING : 9|1@0+ (1,0) [0|255] "" XXX
+ SG_ PED_BRAKE : 3|3@0+ (1,0) [0|7] "" XXX
+ SG_ RST_CTR : 23|6@0+ (1,0) [0|63] "" XXX
+ SG_ S1 : 29|4@0+ (1,0) [0|31] "" XXX
 
 BO_ 578 CAM_LANETRACK: 8 XXX
  SG_ CHKSUM : 63|8@0+ (1,0) [0|255] "" XXX
  SG_ ZERO : 53|6@0+ (1,0) [0|63] "" XXX
- SG_ LINE1 : 3|10@0+ (1,-686) [0|1] "" XXX
  SG_ CTR : 7|4@0+ (1,0) [0|15] "" XXX
  SG_ LINE2 : 9|10@0+ (1,-686) [0|255] "" XXX
  SG_ LANE_CURVE : 31|8@0+ (1,-127) [0|255] "" XXX
  SG_ SIG1 : 39|8@0+ (1,-128) [0|255] "" XXX
  SG_ SIG2 : 47|8@0+ (1,0) [0|255] "" XXX
  SG_ SIG3 : 55|2@0+ (1,0) [0|3] "" XXX
+ SG_ LINE1 : 3|10@0+ (1,-686) [0|1] "" XXX
 
 BO_ 579 CAM_LKAS: 8 XXX
  SG_ LKAS_REQUEST : 3|12@0+ (1,-2048) [0|2048] "" XXX
@@ -173,17 +176,19 @@ BO_ 1160 CAM_Empty3: 8 XXX
  SG_ NEW_SIGNAL_1 : 47|24@0+ (1,0) [0|16777215] "" XXX
 
 BO_ 1088 CAM_LANEINFO: 8 XXX
- SG_ NEW_SIGNAL_5 : 62|1@0+ (1,0) [0|3] "" XXX
- SG_ NEW_SIGNAL_7 : 54|1@0+ (1,0) [0|31] "" XXX
- SG_ NEW_SIGNAL_6 : 13|1@0+ (1,0) [0|15] "" XXX
- SG_ NEW_SIGNAL_8 : 52|1@0+ (1,0) [0|1] "" XXX
- SG_ LINE_VISIBLE : 0|1@1+ (1,0) [0|3] "" XXX
- SG_ LINE_NOT_VISIBLE : 1|1@0+ (1,0) [0|1] "" XXX
- SG_ LANE_LINES : 8|3@1+ (1,0) [0|3] "" XXX
- SG_ NEW_SIGNAL_1 : 6|1@0+ (1,0) [0|65535] "" XXX
+ SG_ BIT3 : 62|1@0+ (1,0) [0|3] "" XXX
+ SG_ HANDS_ON_STEER_WARN_2 : 59|1@0+ (1,0) [0|1] "" XXX
  SG_ HANDS_ON_STEER_WARN : 56|1@0+ (1,0) [0|3] "" XXX
- SG_ NO_ERR_BIT : 14|1@0+ (1,0) [0|1] "" XXX
+ SG_ S1_NOT : 54|1@0+ (1,0) [0|31] "" XXX
+ SG_ S1 : 52|1@0+ (1,0) [0|1] "" XXX
+ SG_ HANDS_WARN_3_BITS : 51|3@0+ (1,0) [0|7] "" XXX
  SG_ ERR_BIT : 40|1@0+ (1,0) [0|1] "" XXX
+ SG_ NO_ERR_BIT : 14|1@0+ (1,0) [0|1] "" XXX
+ SG_ BIT2 : 13|1@0+ (1,0) [0|15] "" XXX
+ SG_ LANE_LINES : 10|3@0+ (1,0) [0|3] "" XXX
+ SG_ BIT1 : 6|1@0+ (1,0) [0|65535] "" XXX
+ SG_ LINE_NOT_VISIBLE : 1|1@0+ (1,0) [0|1] "" XXX
+ SG_ LINE_VISIBLE : 0|1@0+ (1,0) [0|3] "" XXX
 
 BO_ 1479 NEW_MSG_470: 8 XXX
 
