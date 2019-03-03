@@ -9,15 +9,17 @@ def get_powertrain_can_parser(CP, canbus):
   # this function generates lists for signal, messages and initial values
   signals = [
     # sig_name, sig_address, default
-    ("LEFT_BLINK", "BLINK_INFO", 0), 
+    ("LEFT_BLINK", "BLINK_INFO", 0),
     ("RIGHT_BLINK", "BLINK_INFO", 0),
     ("STEER_ANGLE", "STEER", 0),
     ("STEER_ANGLE_RATE", "STEER_RATE", 0),
+    ("LKAS_BLOCK", "STEER_RATE", 0),
+    ("LKAS_TRACK_STATE", "STEER_RATE", 0),
     ("STEER_TORQUE_SENSOR", "STEER_TORQUE", 0),
-    ("FL", "WHEEL_SPEEDS", 0), 
+    ("FL", "WHEEL_SPEEDS", 0),
     ("FR", "WHEEL_SPEEDS", 0),
-    ("RL", "WHEEL_SPEEDS", 0), 
-    ("RR", "WHEEL_SPEEDS", 0), 
+    ("RL", "WHEEL_SPEEDS", 0),
+    ("RR", "WHEEL_SPEEDS", 0),
     ("CRZ_ACTIVE", "CRZ_CTRL", 0),
     ("STANDSTILL","PEDALS", 0),
     ("BRAKE_ON","PEDALS", 0),
@@ -26,20 +28,20 @@ def get_powertrain_can_parser(CP, canbus):
     ("FL", "DOORS", 0),
     ("GAS_PEDAL_PRESSED", "CRZ_EVENTS", 0),
   ]
-  
+
   checks = [
     # sig_address, frequency
-    ("BLINK_INFO", 100),
-    ("STEER", 20),
-    ("STEER_RATE", 20),
-    ("STEER_TORQUE", 20),
-    ("WHEEL_SPEEDS", 20),
-    ("CRZ_CTRL", 20),
+    ("BLINK_INFO", 10),
+    ("STEER", 67),
+    ("STEER_RATE", 83),
+    ("STEER_TORQUE", 83),
+    ("WHEEL_SPEEDS", 100),
+    ("CRZ_CTRL", 50),
     ("CRZ_EVENTS", 50),
-    ("PEDALS", 20),
-    ("SEATBELT", 100),
-    ("DOORS", 100),
-    ("GEAR", 50),
+    ("PEDALS", 50),
+    ("SEATBELT", 10),
+    ("DOORS", 10),
+    ("GEAR", 20),
   ]
 
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.powertrain)
@@ -48,15 +50,15 @@ def get_cam_can_parser(CP, canbus):
   # this function generates lists for signal, messages and initial values
   signals = [
     # sig_name, sig_address, default
-    ("LINE1",      "CAM_LANETRACK", 0),
-    ("CTR",        "CAM_LANETRACK", -1),
-    ("LINE2",      "CAM_LANETRACK", 0),
-    ("LANE_CURVE", "CAM_LANETRACK", 0),
-    ("SIG1",       "CAM_LANETRACK", 0),
-    ("SIG2",       "CAM_LANETRACK", 0),
-    ("ZERO",       "CAM_LANETRACK", 0),
-    ("SIG3",       "CAM_LANETRACK", 0),
-    ("CHKSUM",     "CAM_LANETRACK", 0),
+    #("LINE1",      "CAM_LANETRACK", 0),
+    #("CTR",        "CAM_LANETRACK", -1),
+    #("LINE2",      "CAM_LANETRACK", 0),
+    #("LANE_CURVE", "CAM_LANETRACK", 0),
+    #("SIG1",       "CAM_LANETRACK", 0),
+    #("SIG2",       "CAM_LANETRACK", 0),
+    #("ZERO",       "CAM_LANETRACK", 0),
+    #("SIG3",       "CAM_LANETRACK", 0),
+    #("CHKSUM",     "CAM_LANETRACK", 0),
 
     ("LKAS_REQUEST",     "CAM_LKAS", 0),
     ("CTR",              "CAM_LKAS", -1),
@@ -67,18 +69,21 @@ def get_cam_can_parser(CP, canbus):
     ("BIT_2",            "CAM_LKAS", 0),
     ("CHKSUM",           "CAM_LKAS", 0),
 
-    ("S1",     "CAM_LANEINFO", 0),
+    ("BIT2",       "CAM_LANEINFO", 1),
+    ("NO_ERR_BIT", "CAM_LANEINFO", 1),
+    ("S1",         "CAM_LANEINFO", 1),
+    ("S1_NOT",     "CAM_LANEINFO", 0),
   ]
-  
+
   checks = [
     # sig_address, frequency
-    ("CAM_LKAS",      30),
-    ("CAM_LANETRACK", 30),
-    ("CAM_LANEINFO", 500),
+    ("CAM_LKAS",      16),
+    #("CAM_LANETRACK", 30),
+    ("CAM_LANEINFO", 4),
   ]
 
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.cam)
-  
+
 class CAM_LaneTrack(object):
   def __init__(self, ln1, ctr, ln2, lc, s1, s2, z, s3, ck):
     self.line1 = ln1
@@ -102,13 +107,20 @@ class CAM_LaneKAS(object):
     self.bit2 = b2
     self.chksum = ck
 
+class STEER_LKAS(object):
+  def __init__(self):
+    self.block = 1
+    self.track = 1
+
 class CarState(object):
   def __init__(self, CP, canbus):
     # initialize can parser
     self.CP = CP
-    self.CAM_LT = CAM_LaneTrack(0, -1, 0, 0, 0, 0, 0, 0, 0)
+    #self.CAM_LT = CAM_LaneTrack(0, -1, 0, 0, 0, 0, 0, 0, 0)
     self.CAM_LKAS = CAM_LaneKAS(0, -1, 0, 0, 0, 0, 0, 0)
-    
+
+    self.steer_lkas = STEER_LKAS()
+
     self.car_fingerprint = CP.carFingerprint
     self.blinker_on = False
     self.prev_blinker_on = False
@@ -134,7 +146,7 @@ class CarState(object):
 
     self.can_valid = pt_cp.can_valid
     self.can_valid = True
-    
+
     self.v_wheel_fl = pt_cp.vl["WHEEL_SPEEDS"]['FL'] * CV.KPH_TO_MS
     self.v_wheel_fr = pt_cp.vl["WHEEL_SPEEDS"]['FR'] * CV.KPH_TO_MS
     self.v_wheel_rl = pt_cp.vl["WHEEL_SPEEDS"]['RL'] * CV.KPH_TO_MS
@@ -156,11 +168,11 @@ class CarState(object):
 
     self.acc_active = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
     self.main_on = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
-      
+
     self.steer_torque_driver = pt_cp.vl["STEER_TORQUE"]['STEER_TORQUE_SENSOR']
     self.steer_override = abs(self.steer_torque_driver) > 150 #fixme
 
-    self.angle_steers = pt_cp.vl["STEER"]['STEER_ANGLE'] 
+    self.angle_steers = pt_cp.vl["STEER"]['STEER_ANGLE']
     self.angle_steers_rate = pt_cp.vl["STEER_RATE"]['STEER_ANGLE_RATE']
 
     #self.standstill = pt_cp.vl["PEDALS"]['STANDSTILL'] == 1
@@ -171,7 +183,12 @@ class CarState(object):
     self.door_all_closed = not pt_cp.vl["DOORS"]['FL']
     self.seatbelt =  pt_cp.vl["SEATBELT"]['DRIVER_SEATBELT']
 
+    self.steer_lkas.block = pt_cp.vl["STEER_RATE"]['LKAS_BLOCK']
+    self.steer_lkas.track = pt_cp.vl["STEER_RATE"]['LKAS_TRACK_STATE']
+
     #if self.CAM_LT.ctr != cam_cp.vl["CAM_LANETRACK"]['CTR'] and cam_cp.vl["CAM_LANETRACK"]['CTR'] == cam_cp.vl["CAM_LKAS"]['CTR']:
+
+    self.cam_laneinfo = cam_cp.vl["CAM_LANEINFO"]
 
     if self.CAM_LKAS.ctr != cam_cp.vl["CAM_LKAS"]['CTR']:
       #self.CAM_LT.ctr        = cam_cp.vl["CAM_LANETRACK"]['CTR']
