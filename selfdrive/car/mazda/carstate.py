@@ -15,6 +15,7 @@ def get_powertrain_can_parser(CP, canbus):
     ("STEER_ANGLE_RATE", "STEER_RATE", 0),
     ("LKAS_BLOCK", "STEER_RATE", 0),
     ("LKAS_TRACK_STATE", "STEER_RATE", 0),
+    ("HANDS_OFF_5_SECONDS", "STEER_RATE", 0),
     ("STEER_TORQUE_SENSOR", "STEER_TORQUE", 0),
     ("FL", "WHEEL_SPEEDS", 0),
     ("FR", "WHEEL_SPEEDS", 0),
@@ -111,6 +112,7 @@ class STEER_LKAS(object):
   def __init__(self):
     self.block = 1
     self.track = 1
+    self.handsoff = 0
 
 class CarState(object):
   def __init__(self, CP, canbus):
@@ -170,7 +172,7 @@ class CarState(object):
     self.main_on = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
 
     self.steer_torque_driver = pt_cp.vl["STEER_TORQUE"]['STEER_TORQUE_SENSOR']
-    self.steer_override = abs(self.steer_torque_driver) > 150 #fixme
+    self.steer_override = abs(self.steer_torque_driver) > 100 #fixme
 
     self.angle_steers = pt_cp.vl["STEER"]['STEER_ANGLE']
     self.angle_steers_rate = pt_cp.vl["STEER_RATE"]['STEER_ANGLE_RATE']
@@ -185,6 +187,7 @@ class CarState(object):
 
     self.steer_lkas.block = pt_cp.vl["STEER_RATE"]['LKAS_BLOCK']
     self.steer_lkas.track = pt_cp.vl["STEER_RATE"]['LKAS_TRACK_STATE']
+    self.steer_lkas.handsoff = pt_cp.vl["STEER_RATE"]['HANDS_OFF_5_SECONDS']
 
     #if self.CAM_LT.ctr != cam_cp.vl["CAM_LANETRACK"]['CTR'] and cam_cp.vl["CAM_LANETRACK"]['CTR'] == cam_cp.vl["CAM_LKAS"]['CTR']:
 

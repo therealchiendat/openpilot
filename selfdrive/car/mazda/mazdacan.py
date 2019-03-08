@@ -1,6 +1,6 @@
 from selfdrive.car.mazda.values import CAR, DBC
 
-def create_steering_control(packer, bus, car_fingerprint, ctr, lkas, lnv, b1, b2, err1, err2):
+def create_steering_control(packer, bus, car_fingerprint, ctr, lkas, lnv, b1, b2, err1, err2, ldw):
   # The checksum is calculated by subtracting all byte values across the msg from 241
   # however, the first byte is devided in half and are the two halves
   # are subtracted separtaley the second half must be subtracted from 8 first.
@@ -15,7 +15,7 @@ def create_steering_control(packer, bus, car_fingerprint, ctr, lkas, lnv, b1, b2
   lkasl = tmp & 0xFF
   lkash = tmp >> 8
 
-  csum = 241 - ctr - (lkash - 8) - lkasl - (lnv << 3) - (b1 << 5)  - (b2 << 1)
+  csum = 241 - ctr - (lkash - 8) - lkasl - (lnv << 3) - (b1 << 5)  - (b2 << 1) - (ldw << 7)
 
   if csum < 0:
       csum = csum + 256
@@ -28,6 +28,7 @@ def create_steering_control(packer, bus, car_fingerprint, ctr, lkas, lnv, b1, b2
       "LKAS_REQUEST"     : lkas,
       "BIT_1"            : b1,
       "BIT_2"            : b2,
+      "LDW"              : ldw,
       "LINE_NOT_VISIBLE" : lnv,
       "ERR_BIT_1"        : err1,
       "ERR_BIT_2"        : err2,
@@ -51,8 +52,12 @@ def create_lkas_msg(packer, bus, car_fingerprint, CAM_LKAS):
 
   return packer.make_can_msg("CAM_LKAS", bus, values)
 
-def create_cam_lane_info(packer, bus, car_fingerprint, lnv, cam_laneinfo, steer_lkas):
-  if steer_lkas.block == 1:
+def create_cam_lane_info(packer, bus, car_fingerprint, lnv, cam_laneinfo, steer_lkas, ldwr, ldwl):
+  if ldwr == 1:
+    lin = 4
+  elif ldwl == 1:
+    lin = 3
+  elif steer_lkas.block == 1:
     lin = 1
   elif steer_lkas.track == 1:
     lin = 3
@@ -75,7 +80,9 @@ def create_cam_lane_info(packer, bus, car_fingerprint, lnv, cam_laneinfo, steer_
         "S1_NOT"                : cam_laneinfo["S1_NOT"],
         "HANDS_ON_STEER_WARN"   : 0,
         "HANDS_ON_STEER_WARN_2" : 0,
-        "BIT3"                  : 1
+        "BIT3"                  : 1,
+        "LDW_WARN_RL"           : ldwr,
+        "LDW_WARN_LL"           : ldwl
     }
 
     return packer.make_can_msg("CAM_LANEINFO", bus, values)
