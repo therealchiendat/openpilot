@@ -147,7 +147,7 @@ class CarState(object):
   def update(self, pt_cp, cam_cp):
 
     self.can_valid = pt_cp.can_valid
-    self.can_valid = True
+    #self.can_valid = True
 
     self.v_wheel_fl = pt_cp.vl["WHEEL_SPEEDS"]['FL'] * CV.KPH_TO_MS
     self.v_wheel_fr = pt_cp.vl["WHEEL_SPEEDS"]['FR'] * CV.KPH_TO_MS
@@ -172,7 +172,7 @@ class CarState(object):
     self.main_on = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
 
     self.steer_torque_driver = pt_cp.vl["STEER_TORQUE"]['STEER_TORQUE_SENSOR']
-    self.steer_override = abs(self.steer_torque_driver) > 100 #fixme
+    self.steer_override = abs(self.steer_torque_driver) > 150 #fixme
 
     self.angle_steers = pt_cp.vl["STEER"]['STEER_ANGLE']
     self.angle_steers_rate = pt_cp.vl["STEER_RATE"]['STEER_ANGLE_RATE']

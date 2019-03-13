@@ -10,7 +10,7 @@ from selfdrive.can.packer import CANPacker
 
 class CarControllerParams():
   def __init__(self, car_fingerprint):
-    self.STEER_MAX = 600              # max_steer 2048
+    self.STEER_MAX = 1000              # max_steer 2048
     self.STEER_STEP = 1    # 6        # how often we update the steer cmd
     self.STEER_DELTA_UP = 10           # torque increase per refresh
     self.STEER_DELTA_DOWN = 20         # torque decrease per refresh
@@ -46,6 +46,7 @@ class CarController(object):
     self.ldw = 0
     self.ldwr = 0
     self.ldwl = 0
+    self.lkas_track_ctr = 0
 
   def update(self, sendcan, enabled, CS, frame, actuators):
     """ Controls thread """
@@ -88,10 +89,27 @@ class CarController(object):
         ctr = (frame / P.STEER_STEP) % 16
         #ctr = CS.CAM_LKAS.ctr #(frame / P.STEER_STEP) % 16
 
+        #  assuming controlsd runs at 83 hz
+        #  2000ms => 166.6
+        #  1000ms => 83.3
+        #  500ms  => 41.65
+
+        tsec = 167
+        osec = 83
+        hsec = 42
+        qsec = 21
+        q3sec = 62
+
         if ctr != -1 and self.last_cam_ctr != ctr:
           self.last_cam_ctr = ctr
           #line_not_visible = CS.CAM_LKAS.lnv
-          if CS.v_ego_raw > 4:
+          if CS.steer_lkas.track == 1:
+            self.lkas_track_ctr += 1
+          else:
+            self.lkas_track_ctr = 0
+
+
+          if CS.v_ego_raw > 4 and self.lkas_track_ctr < osec:
             line_not_visible = 0
           else:
             line_not_visible = 1
@@ -99,35 +117,22 @@ class CarController(object):
           e1 = CS.CAM_LKAS.err1
           e2 = CS.CAM_LKAS.err2
 
-          #  assuming controlsd runs at 83 hz
-          #  2000ms => 166.6
-          #  1000ms => 83.3
-          #  500ms  => 41.65
-
-          tsec = 167
-          osec = 83
-          hsec = 42
-          qsec = 21
-          q3sec = 62
-
-          if CS.steer_lkas.handsoff == 1 and self.ldw == 0:
-            self.handsoff_ctr += 1
-            if self.handsoff_ctr > tsec:
-              self.ldw_ctr = osec
-              self.handsoff_ctr = 0
+          if self.ldw_ctr < 0:
+            self.ldw_ctr += 1
+          elif self.ldw_ctr > 0:
+            self.ldw_ctr -= 1
+            if self.ldw_ctr == 0:
+              self.ldw = 0
+              self.ldwl = 0
+              self.ldwr = 0
+              self.ldw_ctr = -tsec # no ldw for two seconds
+            elif self.ldw_ctr < q3sec-10 and self.ldw_ctr > qsec-10:
               self.ldw = 1
-              if apply_steer > 0:
-                self.ldwr = 1
-                self.ldwl = 0
-              else:
-                self.ldwr = 0
-                self.ldwl = 1
-          #else:
-          #  self.handsoff_ctr = 0
-
-          if self.ldw == 0 and CS.steer_lkas.block == 1 and CS.v_ego_raw > 54 and apply_steer != 0:
-            self.ldw = 1
+            else:
+              self.ldw = 0
+          elif CS.steer_lkas.handsoff == 1:
             self.ldw_ctr = osec
+            self.ldw = 0
             if apply_steer > 0:
               self.ldwr = 1
               self.ldwl = 0
@@ -135,20 +140,11 @@ class CarController(object):
               self.ldwr = 0
               self.ldwl = 1
 
-          ldw = 0
-          if self.ldw_ctr > 0:
-            self.ldw_ctr -= 1
-            if self.ldw_ctr == 0:
-              self.ldw = 0
-              self.ldwl = 0
-              self.ldwr = 0
-            elif self.ldw_ctr < q3sec and self.ldw_ctr > qsec:
-              ldw = 1
-
 
           can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
-                                                            CS.CP.carFingerprint, ctr, apply_steer, line_not_visible,
-                                                            1, 1, e1, e2, ldw))
+                                                            CS.CP.carFingerprint, ctr, apply_steer,
+                                                            line_not_visible,
+                                                            1, 1, e1, e2, self.ldw))
 
           # send lane info msgs at 1/8 rate of steer msgs
           if (ctr % 8 == 0):

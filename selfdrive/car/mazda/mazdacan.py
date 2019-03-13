@@ -59,8 +59,6 @@ def create_cam_lane_info(packer, bus, car_fingerprint, lnv, cam_laneinfo, steer_
     lin = 3
   elif steer_lkas.block == 1:
     lin = 1
-  elif steer_lkas.track == 1:
-    lin = 3
   elif lnv == 0:
     lin = 2
   else:
@@ -75,11 +73,11 @@ def create_cam_lane_info(packer, bus, car_fingerprint, lnv, cam_laneinfo, steer_
         "BIT2"                  : cam_laneinfo["BIT2"],
         "NO_ERR_BIT"            : cam_laneinfo["NO_ERR_BIT"],
         "ERR_BIT"               : 0,
-        "HANDS_WARN_3_BITS"     : 0,
+        "HANDS_WARN_3_BITS"     : 0 if ldwl == 0 and ldwr == 0 else 7,
         "S1"                    : cam_laneinfo["S1"],
         "S1_NOT"                : cam_laneinfo["S1_NOT"],
-        "HANDS_ON_STEER_WARN"   : 0,
-        "HANDS_ON_STEER_WARN_2" : 0,
+        "HANDS_ON_STEER_WARN"   : ldwr+ldwl,
+        "HANDS_ON_STEER_WARN_2" : ldwr+ldwl,
         "BIT3"                  : 1,
         "LDW_WARN_RL"           : ldwr,
         "LDW_WARN_LL"           : ldwl
