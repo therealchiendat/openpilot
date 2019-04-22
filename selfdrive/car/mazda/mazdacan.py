@@ -52,17 +52,14 @@ def create_lkas_msg(packer, bus, car_fingerprint, CAM_LKAS):
 
   return packer.make_can_msg("CAM_LKAS", bus, values)
 
-def create_cam_lane_info(packer, bus, car_fingerprint, lnv, cam_laneinfo, steer_lkas, ldwr, ldwl):
-  if ldwr == 1:
-    lin = 4
-  elif ldwl == 1:
-    lin = 3
-  elif steer_lkas.block == 1:
-    lin = 1
-  elif lnv == 0:
-    lin = 2
+def create_cam_lane_info(packer, bus, car_fingerprint, lnv, cam_laneinfo, steer_lkas, ldwr, ldwl, lines):
+
+  if steer_lkas.block == 1:
+    lin = 0
+  elif lines == 0:
+    lin = 0
   else:
-    lin = 1
+    lin = 2
 
   if car_fingerprint == CAR.CX5:
     values = {
@@ -73,14 +70,14 @@ def create_cam_lane_info(packer, bus, car_fingerprint, lnv, cam_laneinfo, steer_
         "BIT2"                  : cam_laneinfo["BIT2"],
         "NO_ERR_BIT"            : cam_laneinfo["NO_ERR_BIT"],
         "ERR_BIT"               : 0,
-        "HANDS_WARN_3_BITS"     : 0 if ldwl == 0 and ldwr == 0 else 7,
+        "HANDS_WARN_3_BITS"     : 0 , #if ldwl == 0 and ldwr == 0 else 7,
         "S1"                    : cam_laneinfo["S1"],
         "S1_NOT"                : cam_laneinfo["S1_NOT"],
-        "HANDS_ON_STEER_WARN"   : ldwr+ldwl,
-        "HANDS_ON_STEER_WARN_2" : ldwr+ldwl,
+        "HANDS_ON_STEER_WARN"   : 0, #ldwr+ldwl,
+        "HANDS_ON_STEER_WARN_2" : 0, #ldwr+ldwl,
         "BIT3"                  : 1,
-        "LDW_WARN_RL"           : ldwr,
-        "LDW_WARN_LL"           : ldwl
+        "LDW_WARN_RL"           : 0, #ldwr,
+        "LDW_WARN_LL"           : 0 #ldwl
     }
 
     return packer.make_can_msg("CAM_LANEINFO", bus, values)
