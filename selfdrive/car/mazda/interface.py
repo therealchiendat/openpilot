@@ -5,6 +5,7 @@ from selfdrive.config import Conversions as CV
 from selfdrive.controls.lib.drive_helpers import create_event, EventTypes as ET
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.car.mazda.values import DBC, CAR
+from selfdrive.car import STD_CARGO_KG
 from selfdrive.car.mazda.carstate import CarState, get_powertrain_can_parser, get_cam_can_parser
 
 try:
@@ -20,11 +21,10 @@ class CanBus(object):
     self.cam = 1
 
 class CarInterface(object):
-  def __init__(self, CP, sendcan=None):
+  def __init__(self, CP, CarController):
     self.CP = CP
 
     self.frame = 0
-    self.can_invalid_count = 0
     self.acc_active_prev = 0
 
     # *** init the major players ***
@@ -34,9 +34,8 @@ class CarInterface(object):
     self.pt_cp = get_powertrain_can_parser(CP, canbus)
     self.cam_cp = get_cam_can_parser(CP, canbus)
 
-    # sending if read only is False
-    if sendcan is not None:
-      self.sendcan = sendcan
+    self.CC = None
+    if CarController is not None:
       self.CC = CarController(canbus, CP.carFingerprint, CP.enableCamera)
 
   @staticmethod
@@ -48,10 +47,11 @@ class CarInterface(object):
     return 1.0
 
   @staticmethod
-  def get_params(candidate, fingerprint):
+  def get_params(candidate, fingerprint, vin=""):
     ret = car.CarParams.new_message()
 
     ret.carName = "mazda"
+    ret.carVin = vin
     ret.carFingerprint = candidate
 
     ret.enableCruise = False
@@ -59,10 +59,9 @@ class CarInterface(object):
     # TODO: gate this on detection
     ret.enableCamera = True
 
-    std_cargo = 136
     # hardcoding honda civic 2016 touring params so they can be used to
     # scale unknown params for other cars
-    mass_civic = 2923./2.205 + std_cargo
+    mass_civic = 2923./2.205 + STD_CARGO_KG
     wheelbase_civic = 2.70
     centerToFront_civic = wheelbase_civic * 0.4
     centerToRear_civic = wheelbase_civic - centerToFront_civic
@@ -72,24 +71,28 @@ class CarInterface(object):
 
     if candidate in [CAR.CX5]:
       stop_and_go = True
-      ret.mass =  3655 * CV.LB_TO_KG + std_cargo
+      ret.mass =  3655 * CV.LB_TO_KG + STD_CARGO_KG
       ret.wheelbase = 2.7
       ret.centerToFront = ret.wheelbase * 0.41
       ret.steerRatio = 15.5
-      ret.steerKf = 0.00004
-      ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
-      ret.steerKpV, ret.steerKiV = [[0.2], [0.18]]
-      ret.steerMaxBP = [0.] # m/s
-      ret.steerMaxV = [1.]
+      #ret.steerKf = 0.00004
+      #ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
+      #ret.steerKpV, ret.steerKiV = [[0.2], [0.18]]
+      #ret.steerMaxBP = [0.] # m/s
+      #ret.steerMaxV = [1.]
       tire_stiffness_factor = 0.70
       # This is optional, and will cause boardd to synchnonize with the bus instead of time
       # sync with STEER_RATE msg
       #ret.syncID = 577
 
-    ret.steerActuatorDelay = 0.1
-    ret.steerRateCost = 0.5
+      ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[9., 20.], [9., 20.]]
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.18]]
+      ret.lateralTuning.pid.kf = 0.00004   # full torque for 10 deg at 80mph means 0.00007818594
 
-    ret.safetyModel = car.CarParams.SafetyModels.mazda
+
+    ret.steerActuatorDelay = 0.1
+
+    ret.safetyModel = car.CarParams.SafetyModel.mazda
     ret.steerControlType = car.CarParams.SteerControlType.torque
     ret.steerLimitAlert = False
     # testing tuning
@@ -100,13 +103,13 @@ class CarInterface(object):
     ret.brakeMaxBP = [5., 20.]
     ret.brakeMaxV = [1., 0.8]
 
-    ret.longPidDeadzoneBP = [0.]
-    ret.longPidDeadzoneV = [0.]
+    ret.longitudinalTuning.deadzoneBP = [0., 9.]
+    ret.longitudinalTuning.deadzoneV = [0., .15]
+    ret.longitudinalTuning.kpBP = [0., 5., 35.]
+    ret.longitudinalTuning.kpV = [3.6, 2.4, 1.5]
+    ret.longitudinalTuning.kiBP = [0., 35.]
+    ret.longitudinalTuning.kiV = [0.54, 0.36]
 
-    ret.longitudinalKpBP = [5., 35.]
-    ret.longitudinalKpV = [2.4, 1.5]
-    ret.longitudinalKiBP = [0.]
-    ret.longitudinalKiV = [0.36]
 
     ret.stoppingControl = True
     ret.startAccel = 0.8
@@ -191,13 +194,6 @@ class CarInterface(object):
 
 
     events = []
-    if not self.CS.can_valid:
-      self.can_invalid_count += 1
-      if self.can_invalid_count >= 5:
-        events.append(create_event('commIssue', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
-    else:
-      self.can_invalid_count = 0
-
     if self.CS.acc_active and not self.acc_active_prev:
       events.append(create_event('pcmEnable', [ET.ENABLE]))
     if not self.CS.acc_active:
@@ -227,5 +223,6 @@ class CarInterface(object):
     return ret.as_reader()
 
   def apply(self, c):
-    self.CC.update(self.sendcan, c.enabled, self.CS, self.frame, c.actuators)
+    can_sends = self.CC.update(c.enabled, self.CS, self.frame, c.actuators)
     self.frame += 1
+    return can_sends

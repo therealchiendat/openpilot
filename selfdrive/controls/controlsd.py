@@ -516,7 +516,7 @@ def controlsd_thread(gctx=None):
 
 
 def main(gctx=None):
-  controlsd_thread(gctx, 83)
+  controlsd_thread(gctx)
 
 
 if __name__ == "__main__":

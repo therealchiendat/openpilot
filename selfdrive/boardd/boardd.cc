@@ -130,7 +130,7 @@ void *safety_setter_thread(void *s) {
   case cereal::CarParams::SafetyModel::SUBARU:
     safety_setting = SAFETY_SUBARU;
     break;
-  case (int)cereal::CarParams::SafetyModels::MAZDA:
+  case cereal::CarParams::SafetyModel::MAZDA:
     safety_setting = SAFETY_MAZDA;
     break;
   default:

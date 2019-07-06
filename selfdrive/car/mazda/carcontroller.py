@@ -48,7 +48,7 @@ class CarController(object):
     self.ldwl = 0
     self.lkas_track_ctr = 0
 
-  def update(self, sendcan, enabled, CS, frame, actuators):
+  def update(self, enabled, CS, frame, actuators):
     """ Controls thread """
 
     P = self.params
@@ -159,4 +159,5 @@ class CarController(object):
 
           #can_sends.append(mazdacan.create_lane_track(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LT))
 
-      sendcan.send(can_list_to_can_capnp(can_sends, msgtype='sendcan').to_bytes())
+      #sendcan.send(can_list_to_can_capnp(can_sends, msgtype='sendcan'))
+      return can_sends
