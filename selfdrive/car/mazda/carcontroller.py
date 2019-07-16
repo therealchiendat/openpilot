@@ -1,7 +1,9 @@
+from cereal import car
 from common.numpy_fast import clip, interp
-from common.realtime import sec_since_boot
+from common.realtime import DT_CTRL
 from selfdrive.config import Conversions as CV
-from selfdrive.boardd.boardd import can_list_to_can_capnp
+
+
 from selfdrive.car.mazda.carstate import CarState, get_powertrain_can_parser, get_cam_can_parser
 from selfdrive.car.mazda import mazdacan
 from selfdrive.car.mazda.values import CAR, DBC
@@ -11,7 +13,7 @@ from selfdrive.can.packer import CANPacker
 class CarControllerParams():
   def __init__(self, car_fingerprint):
     self.STEER_MAX = 600              # max_steer 2048
-    self.STEER_STEP = 1    # 6        # how often we update the steer cmd
+    self.STEER_STEP = 2    # 6        # how often we update the steer cmd
     self.STEER_DELTA_UP = 10           # torque increase per refresh
     self.STEER_DELTA_DOWN = 20         # torque decrease per refresh
     if car_fingerprint == CAR.CX5:
@@ -24,8 +26,8 @@ class CarControllerParams():
 
 
 class CarController(object):
-  def __init__(self, canbus, car_fingerprint, enable_camera):
-    self.start_time = sec_since_boot()
+  def __init__(self, canbus, car_fingerprint):
+    self.start_time = 0
     self.lkas_active = False
     self.steer_idx = 0
     self.apply_steer_last = 0
@@ -86,19 +88,19 @@ class CarController(object):
 
       if self.car_fingerprint == CAR.CX5:
         #counts from 0 to 15 then back to 0
-        ctr = (frame / P.STEER_STEP) % 16
+        ctr = (frame // P.STEER_STEP) % 16
         #ctr = CS.CAM_LKAS.ctr #(frame / P.STEER_STEP) % 16
 
-        #  assuming controlsd runs at 83 hz
-        #  2000ms => 166.6
-        #  1000ms => 83.3
-        #  500ms  => 41.65
+        #  assuming controlsd runs at 100 hz
+        #  2000ms => 200
+        #  1000ms => 100
+        #  500ms  => 50
 
-        tsec = 167
-        osec = 83
-        hsec = 42
-        qsec = 21
-        q3sec = 62
+        tsec = 200
+        osec = 100
+        hsec = 50
+        qsec = 25
+        q3sec = 75
 
         if ctr != -1 and self.last_cam_ctr != ctr:
           self.last_cam_ctr = ctr
@@ -109,7 +111,7 @@ class CarController(object):
             self.lkas_track_ctr = 0
 
 
-          if CS.v_ego_raw > 45:
+          if CS.v_ego_raw > 15:
             line_not_visible = 0
           else:
             line_not_visible = 1
@@ -150,8 +152,8 @@ class CarController(object):
                                                             line_not_visible,
                                                             1, 1, e1, e2, self.ldw))
           # send lane info msgs at 1/8 rate of steer msgs
-          #if (ctr % 8 == 0):
-          can_sends.append(mazdacan.create_cam_lane_info(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint,
+          if (ctr % 8 == 0):
+            can_sends.append(mazdacan.create_cam_lane_info(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint,
                                                            line_not_visible, CS.cam_laneinfo, CS.steer_lkas,
                                                            self.ldwr, self.ldwl, lines))
 
@@ -159,5 +161,4 @@ class CarController(object):
 
           #can_sends.append(mazdacan.create_lane_track(self.packer_pt, canbus.powertrain, CS.CP.carFingerprint, CS.CAM_LT))
 
-      #sendcan.send(can_list_to_can_capnp(can_sends, msgtype='sendcan'))
-      return can_sends
+    return can_sends

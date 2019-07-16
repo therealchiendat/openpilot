@@ -5,14 +5,8 @@ from selfdrive.config import Conversions as CV
 from selfdrive.controls.lib.drive_helpers import create_event, EventTypes as ET
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.car.mazda.values import DBC, CAR
-from selfdrive.car import STD_CARGO_KG
 from selfdrive.car.mazda.carstate import CarState, get_powertrain_can_parser, get_cam_can_parser
-
-try:
-  from selfdrive.car.mazda.carcontroller import CarController
-except ImportError:
-  CarController = None
-
+from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness
 
 class CanBus(object):
   def __init__(self):
@@ -36,7 +30,7 @@ class CarInterface(object):
 
     self.CC = None
     if CarController is not None:
-      self.CC = CarController(canbus, CP.carFingerprint, CP.enableCamera)
+      self.CC = CarController(canbus, CP.carFingerprint)
 
   @staticmethod
   def compute_gb(accel, speed):
@@ -53,21 +47,12 @@ class CarInterface(object):
     ret.carName = "mazda"
     ret.carVin = vin
     ret.carFingerprint = candidate
+    ret.safetyModel = car.CarParams.SafetyModel.mazda
 
-    ret.enableCruise = False
-
-    # TODO: gate this on detection
+    ret.enableCruise = True
     ret.enableCamera = True
-
-    # hardcoding honda civic 2016 touring params so they can be used to
-    # scale unknown params for other cars
-    mass_civic = 2923./2.205 + STD_CARGO_KG
-    wheelbase_civic = 2.70
-    centerToFront_civic = wheelbase_civic * 0.4
-    centerToRear_civic = wheelbase_civic - centerToFront_civic
-    rotationalInertia_civic = 2500
-    tireStiffnessFront_civic = 192150
-    tireStiffnessRear_civic = 202500
+    
+    tire_stiffness_factor = 0.70   # not optimized yet
 
     if candidate in [CAR.CX5]:
       stop_and_go = True
@@ -75,73 +60,68 @@ class CarInterface(object):
       ret.wheelbase = 2.7
       ret.centerToFront = ret.wheelbase * 0.41
       ret.steerRatio = 15.5
-      #ret.steerKf = 0.00004
-      #ret.steerKiBP, ret.steerKpBP = [[0.], [0.]]
-      #ret.steerKpV, ret.steerKiV = [[0.2], [0.18]]
-      #ret.steerMaxBP = [0.] # m/s
-      #ret.steerMaxV = [1.]
-      tire_stiffness_factor = 0.70
-      # This is optional, and will cause boardd to synchnonize with the bus instead of time
-      # sync with STEER_RATE msg
-      #ret.syncID = 577
 
-      ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[9., 20.], [9., 20.]]
+      ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
+      #ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[9., 22.], [9., 22.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.18]]
-      ret.lateralTuning.pid.kf = 0.00004   # full torque for 10 deg at 80mph means 0.00007818594
+
+      ret.lateralTuning.pid.kf = 0.00004
 
 
     ret.steerActuatorDelay = 0.1
-
-    ret.safetyModel = car.CarParams.SafetyModel.mazda
+    ret.steerRateCost = 1.0
+    ret.steerRatioRear = 0.
     ret.steerControlType = car.CarParams.SteerControlType.torque
     ret.steerLimitAlert = False
-    # testing tuning
 
-    # FIXME: from gm
+
+    # steer limitations VS speed
+    ret.steerMaxBP = [0.]  # m/s
+    ret.steerMaxV = [1.]
+
+
+    # No long control in Mazda
     ret.gasMaxBP = [0.]
-    ret.gasMaxV = [.5]
-    ret.brakeMaxBP = [5., 20.]
-    ret.brakeMaxV = [1., 0.8]
-
-    ret.longitudinalTuning.deadzoneBP = [0., 9.]
-    ret.longitudinalTuning.deadzoneV = [0., .15]
-    ret.longitudinalTuning.kpBP = [0., 5., 35.]
-    ret.longitudinalTuning.kpV = [3.6, 2.4, 1.5]
-    ret.longitudinalTuning.kiBP = [0., 35.]
-    ret.longitudinalTuning.kiV = [0.54, 0.36]
-
-
-    ret.stoppingControl = True
-    ret.startAccel = 0.8
+    ret.gasMaxV = [0.]
+    ret.brakeMaxBP = [0.]
+    ret.brakeMaxV = [0.]
+    ret.longitudinalTuning.deadzoneBP = [0.]
+    ret.longitudinalTuning.deadzoneV = [0.]
+    ret.longitudinalTuning.kpBP = [0.]
+    ret.longitudinalTuning.kpV = [0.]
+    ret.longitudinalTuning.kiBP = [0.]
+    ret.longitudinalTuning.kiV = [0.]
+    
+    
+    ret.openpilotLongitudinalControl = False
+    ret.stoppingControl = False
+    ret.startAccel = 0.0
     # end from gm
 
-    centerToRear = ret.wheelbase - ret.centerToFront
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase
-    ret.rotationalInertia = rotationalInertia_civic * \
-                            ret.mass * ret.wheelbase**2 / (mass_civic * wheelbase_civic**2)
+
+    ret.rotationalInertia = scale_rot_inertia(ret.mass, ret.wheelbase)
 
     # TODO: start from empirically derived lateral slip stiffness for the civic and scale by
     # mass and CG position, so all cars will have approximately similar dyn behaviors
-    ret.tireStiffnessFront = tireStiffnessFront_civic * \
-                             ret.mass / mass_civic * \
-                             (centerToRear / ret.wheelbase) / (centerToRear_civic / wheelbase_civic)
-    ret.tireStiffnessRear = tireStiffnessRear_civic * \
-                            ret.mass / mass_civic * \
-                            (ret.centerToFront / ret.wheelbase) / (centerToFront_civic / wheelbase_civic)
+    ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
+                                                                         tire_stiffness_factor=tire_stiffness_factor)
 
     return ret
 
   # returns a car.CarState
   def update(self, c):
 
-    self.pt_cp.update(int(sec_since_boot() * 1e9), False)
-    self.cam_cp.update(int(sec_since_boot() * 1e9), False)
+    can_rcv_valid, _ = self.pt_cp.update(int(sec_since_boot() * 1e9), True)
+    cam_rcv_valid, _ = self.cam_cp.update(int(sec_since_boot() * 1e9), False)
     
     self.CS.update(self.pt_cp, self.cam_cp)
 
     # create message
     ret = car.CarState.new_message()
+
+    ret.canValid = can_rcv_valid and cam_rcv_valid and self.pt_cp.can_valid and self.cam_cp.can_valid
 
     # speeds
     ret.vEgo = self.CS.v_ego
@@ -184,7 +164,15 @@ class CarInterface(object):
 
     ret.buttonEvents = buttonEvents
 
+    # torque and user override. Driver awareness
+    # timer resets when the user uses the steering wheel.
+    ret.steeringPressed = self.CS.steer_override
+    ret.steeringTorque = self.CS.steer_torque_driver
+
     # cruise state
+    ret.cruiseState.enabled = bool(self.CS.acc_active)
+    ret.cruiseState.speedOffset = 0.
+
     ret.cruiseState.available = bool(self.CS.main_on)
     ret.leftBlinker = bool(self.CS.left_blinker_on)
     ret.rightBlinker = bool(self.CS.right_blinker_on)

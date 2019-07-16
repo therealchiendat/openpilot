@@ -139,9 +139,9 @@ class CarState(object):
     # vEgo kalman filter
     dt = 0.01
 
-    self.v_ego_kf = KF1D(x0=[[0.0], [0.0]],
-                         A=[[1.0, dt], [0.0, 1.0]],
-                         C=[1.0, 0.0],
+    self.v_ego_kf = KF1D(x0=[[0.], [0.]],
+                         A=[[1., dt], [0.0, 1.]],
+                         C=[1., 0.],
                          K=[[0.12287673], [0.29666309]])
     
     self.v_ego = 0.
@@ -155,11 +155,11 @@ class CarState(object):
     self.v_wheel_fr = pt_cp.vl["WHEEL_SPEEDS"]['FR'] * CV.KPH_TO_MS
     self.v_wheel_rl = pt_cp.vl["WHEEL_SPEEDS"]['RL'] * CV.KPH_TO_MS
     self.v_wheel_rr = pt_cp.vl["WHEEL_SPEEDS"]['RR'] * CV.KPH_TO_MS
-    speed_estimate = (self.v_wheel_fl + self.v_wheel_fr + self.v_wheel_rl + self.v_wheel_rr) / 4.0
+    v_wheel = (self.v_wheel_fl + self.v_wheel_fr + self.v_wheel_rl + self.v_wheel_rr) / 4.
 
-    self.v_ego_raw = speed_estimate
+    self.v_ego_raw = v_wheel
     # FIXME
-    v_ego_x = self.v_ego_kf.update(speed_estimate)
+    v_ego_x = self.v_ego_kf.update(v_wheel)
     self.v_ego = float(v_ego_x[0])
     self.a_ego = float(v_ego_x[1])
 
@@ -186,6 +186,9 @@ class CarState(object):
 
     self.door_all_closed = not pt_cp.vl["DOORS"]['FL']
     self.seatbelt =  pt_cp.vl["SEATBELT"]['DRIVER_SEATBELT']
+
+    self.steer_error = False
+    self.brake_error = False
 
     self.steer_lkas.block = pt_cp.vl["STEER_RATE"]['LKAS_BLOCK']
     self.steer_lkas.track = pt_cp.vl["STEER_RATE"]['LKAS_TRACK_STATE']
