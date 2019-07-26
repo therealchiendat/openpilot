@@ -4,7 +4,7 @@ from common.realtime import sec_since_boot
 from selfdrive.config import Conversions as CV
 from selfdrive.controls.lib.drive_helpers import create_event, EventTypes as ET
 from selfdrive.controls.lib.vehicle_model import VehicleModel
-from selfdrive.car.mazda.values import DBC, CAR
+from selfdrive.car.mazda.values import CAR
 from selfdrive.car.mazda.carstate import CarState, get_powertrain_can_parser, get_cam_can_parser
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness
 
@@ -55,7 +55,6 @@ class CarInterface(object):
     tire_stiffness_factor = 0.70   # not optimized yet
 
     if candidate in [CAR.CX5]:
-      stop_and_go = True
       ret.mass =  3655 * CV.LB_TO_KG + STD_CARGO_KG
       ret.wheelbase = 2.7
       ret.centerToFront = ret.wheelbase * 0.41
@@ -111,17 +110,17 @@ class CarInterface(object):
     return ret
 
   # returns a car.CarState
-  def update(self, c):
+  def update(self, c, can_strings):
 
-    can_rcv_valid, _ = self.pt_cp.update(int(sec_since_boot() * 1e9), True)
-    cam_rcv_valid, _ = self.cam_cp.update(int(sec_since_boot() * 1e9), False)
+    self.pt_cp.update_strings(int(sec_since_boot() * 1e9), can_strings)
+    self.cam_cp.update_strings(int(sec_since_boot() * 1e9), can_strings)
     
     self.CS.update(self.pt_cp, self.cam_cp)
 
     # create message
     ret = car.CarState.new_message()
 
-    ret.canValid = can_rcv_valid and cam_rcv_valid and self.pt_cp.can_valid and self.cam_cp.can_valid
+    ret.canValid = self.pt_cp.can_valid and self.cam_cp.can_valid
 
     # speeds
     ret.vEgo = self.CS.v_ego

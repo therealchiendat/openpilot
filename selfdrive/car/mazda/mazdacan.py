@@ -1,4 +1,4 @@
-from selfdrive.car.mazda.values import CAR, DBC
+from selfdrive.car.mazda.values import CAR
 
 def create_steering_control(packer, bus, car_fingerprint, ctr, lkas, lnv, b1, b2, err1, err2, ldw):
   # The checksum is calculated by subtracting all byte values across the msg from 241

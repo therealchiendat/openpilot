@@ -1,10 +1,4 @@
-from cereal import car
-from common.numpy_fast import clip, interp
-from common.realtime import DT_CTRL
-from selfdrive.config import Conversions as CV
-
-
-from selfdrive.car.mazda.carstate import CarState, get_powertrain_can_parser, get_cam_can_parser
+from common.numpy_fast import clip
 from selfdrive.car.mazda import mazdacan
 from selfdrive.car.mazda.values import CAR, DBC
 from selfdrive.can.packer import CANPacker
@@ -98,7 +92,7 @@ class CarController(object):
 
         tsec = 200
         osec = 100
-        hsec = 50
+        #hsec = 50
         qsec = 25
         q3sec = 75
 
