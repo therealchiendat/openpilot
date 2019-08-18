@@ -1,3 +1,11 @@
+
+#define LKAS 0x243
+#define LANEINFO 0x440
+
+// track msgs coming from OP so that we know what CAM msgs to drop and what to forward
+int op_lkas_detected = 0;
+int op_laneinfo_detected = 0;
+
 void mazda_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {}
 
 int mazda_ign_hook() {
@@ -12,7 +20,22 @@ static void mazda_init(int16_t param) {
 }
 
 static int mazda_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
-  return true;
+  int tx = 1;
+  int addr = GET_ADDR(to_send);
+  int bus = GET_BUS(to_send);
+
+  // Check if msg is sent on BUS 0
+  if (bus == 0) {
+    if (addr == LKAS){
+      op_lkas_detected = 1;
+    }
+    if (addr == LANEINFO){
+      op_laneinfo_detected = 1;
+    }
+  }
+
+  // 1 allows the message through
+  return tx;
 }
 
 static int mazda_tx_lin_hook(int lin_num, uint8_t *data, int len) {
@@ -28,9 +51,14 @@ static int mazda_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
   if (bus_num == 0) {
     return 1; //  CAN Bus0 ==> CAN Bus1
   }
-  // forward CAN 1 > 0, except CAM_LKAS, and CAM_LANEINFO
+  // forward CAN 1 > 0
   else if (bus_num == 1) {
-    if (addr == 0x243 || addr == 0x440) {
+      // drop stock CAM_LKAS if OP is sending them
+    if (addr == LKAS && op_lkas_detected) {
+      return -1;
+    }
+    // drop stock CAM_LANEINFO if OP is sending them
+    if (addr == LANEINFO && op_laneinfo_detected) {
       return -1;
     }
     return 0; // Main CAN
