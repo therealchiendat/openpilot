@@ -173,7 +173,7 @@ class CarState(object):
     self.main_on = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
 
     self.steer_torque_driver = pt_cp.vl["STEER_TORQUE"]['STEER_TORQUE_SENSOR']
-    self.steer_override = abs(self.steer_torque_driver) > 150 #fixme
+    self.steer_override = abs(self.steer_torque_driver) > 15 #fixme
 
     self.angle_steers = pt_cp.vl["STEER"]['STEER_ANGLE']
     self.angle_steers_rate = pt_cp.vl["STEER_RATE"]['STEER_ANGLE_RATE']
