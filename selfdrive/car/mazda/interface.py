@@ -73,7 +73,6 @@ class CarInterface(object):
     ret.steerControlType = car.CarParams.SteerControlType.torque
     ret.steerLimitAlert = False
 
-
     # steer limitations VS speed
     ret.steerMaxBP = [0.]  # m/s
     ret.steerMaxV = [1.]
@@ -92,9 +91,12 @@ class CarInterface(object):
     ret.longitudinalTuning.kiV = [0.]
     
     
-    ret.openpilotLongitudinalControl = False
-    ret.stoppingControl = False
+    ret.openpilotLongitudinalControl = True
+    ret.stoppingControl = True
     ret.startAccel = 0.0
+
+    ret.minEnableSpeed = -1
+
     # end from gm
 
     # TODO: get actual value, for now starting with reasonable value for
@@ -171,8 +173,8 @@ class CarInterface(object):
     ret.leftBlinker = bool(self.CS.left_blinker_on)
     ret.rightBlinker = bool(self.CS.right_blinker_on)
 
-    ret.doorOpen = not self.CS.door_all_closed
-    ret.seatbeltUnlatched = not self.CS.seatbelt
+    ret.doorOpen = self.CS.door_open
+    ret.seatbeltUnlatched = self.CS.seatbelt_unlatched
 
 
     events = []
@@ -186,6 +188,9 @@ class CarInterface(object):
     if ret.seatbeltUnlatched:
       events.append(create_event('seatbeltNotLatched', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
 
+    if self.CS.low_speed_lockout:
+      events.append(create_event('speedTooLow', [ET.NO_ENTRY]))
+
     # handle button presses
     for b in ret.buttonEvents:
       # do enable on both accel and decel buttons
@@ -197,7 +202,6 @@ class CarInterface(object):
 
     ret.events = events
 
-    # update previous brake/gas pressed
     self.acc_active_prev = self.CS.acc_active
 
 

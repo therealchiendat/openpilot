@@ -16,6 +16,7 @@ def get_powertrain_can_parser(CP, canbus):
     ("LKAS_TRACK_STATE", "STEER_RATE", 0),
     ("HANDS_OFF_5_SECONDS", "STEER_RATE", 0),
     ("STEER_TORQUE_SENSOR", "STEER_TORQUE", 0),
+    ("STEER_TORQUE_MOTOR", "STEER_TORQUE", 0),
     ("FL", "WHEEL_SPEEDS", 0),
     ("FR", "WHEEL_SPEEDS", 0),
     ("RL", "WHEEL_SPEEDS", 0),
@@ -129,11 +130,10 @@ class CarState(object):
     self.prev_left_blinker_on = False
     self.right_blinker_on = False
     self.prev_right_blinker_on = False
-
     self.steer_torque_driver = 0
     self.steer_not_allowed = False
-
     self.main_on = False
+    self.acc_active_last = False
 
     # vEgo kalman filter
     dt = 0.01
@@ -172,7 +172,12 @@ class CarState(object):
     self.acc_active = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
     self.main_on = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
 
+    if self.acc_active != self.acc_active_last:
+      self.v_cruise_pcm =  v_wheel // CV.KPH_TO_MS
+      self.acc_active_last = self.acc_active
+
     self.steer_torque_driver = pt_cp.vl["STEER_TORQUE"]['STEER_TORQUE_SENSOR']
+    self.steer_torque_motor = pt_cp.vl["STEER_TORQUE"]['STEER_TORQUE_MOTOR']
     self.steer_override = abs(self.steer_torque_driver) > 15 #fixme
 
     self.angle_steers = pt_cp.vl["STEER"]['STEER_ANGLE']
@@ -181,10 +186,14 @@ class CarState(object):
     #self.standstill = pt_cp.vl["PEDALS"]['STANDSTILL'] == 1
     #self.brake_pressed = pt_cp.vl["PEDALS"]['BREAK_PEDAL_1'] == 1
 
-    self.standstill = self.v_ego_raw < 0.01
+    self.standstill = self.v_ego_raw < 0.001
 
-    self.door_all_closed = not pt_cp.vl["DOORS"]['FL']
-    self.seatbelt =  pt_cp.vl["SEATBELT"]['DRIVER_SEATBELT']
+    self.door_open = any([pt_cp.vl["DOORS"]['FL'],
+                                   pt_cp.vl["DOORS"]['FR'],
+                                   pt_cp.vl["DOORS"]['RL'],
+                                   pt_cp.vl["DOORS"]['RR']])
+
+    self.seatbelt_unlatched =  pt_cp.vl["SEATBELT"]['DRIVER_SEATBELT'] == 0
 
     self.steer_error = False
     self.brake_error = False
@@ -192,6 +201,9 @@ class CarState(object):
     self.steer_lkas.block = pt_cp.vl["STEER_RATE"]['LKAS_BLOCK']
     self.steer_lkas.track = pt_cp.vl["STEER_RATE"]['LKAS_TRACK_STATE']
     self.steer_lkas.handsoff = pt_cp.vl["STEER_RATE"]['HANDS_OFF_5_SECONDS']
+
+    self.steer_not_allowed = self.steer_lkas.block == 1
+    self.low_speed_lockout = (v_wheel // CV.KPH_TO_MS) < 45
 
     #if self.CAM_LT.ctr != cam_cp.vl["CAM_LANETRACK"]['CTR'] and cam_cp.vl["CAM_LANETRACK"]['CTR'] == cam_cp.vl["CAM_LKAS"]['CTR']:
 
