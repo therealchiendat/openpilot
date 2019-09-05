@@ -206,7 +206,7 @@ class CarState(object):
     self.steer_lkas.handsoff = pt_cp.vl["STEER_RATE"]['HANDS_OFF_5_SECONDS']
 
     #self.steer_not_allowed = self.steer_lkas.block == 1
-    #self.low_speed_lockout = (v_wheel // CV.KPH_TO_MS) < 45
+    self.low_speed_lockout = (v_wheel // CV.KPH_TO_MS) < 20
 
     #if self.CAM_LT.ctr != cam_cp.vl["CAM_LANETRACK"]['CTR'] and cam_cp.vl["CAM_LANETRACK"]['CTR'] == cam_cp.vl["CAM_LKAS"]['CTR']:
 
