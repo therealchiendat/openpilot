@@ -27,6 +27,9 @@ def get_powertrain_can_parser(CP, canbus):
     ("GEAR","GEAR", 0),
     ("DRIVER_SEATBELT", "SEATBELT", 0),
     ("FL", "DOORS", 0),
+    ("FR", "DOORS", 0),
+    ("BL", "DOORS", 0),
+    ("BR", "DOORS", 0),
     ("GAS_PEDAL_PRESSED", "CRZ_EVENTS", 0),
   ]
 
@@ -189,9 +192,9 @@ class CarState(object):
     self.standstill = self.v_ego_raw < 0.001
 
     self.door_open = any([pt_cp.vl["DOORS"]['FL'],
-                                   pt_cp.vl["DOORS"]['FR'],
-                                   pt_cp.vl["DOORS"]['RL'],
-                                   pt_cp.vl["DOORS"]['RR']])
+                          pt_cp.vl["DOORS"]['FR'],
+                          pt_cp.vl["DOORS"]['BL'],
+                          pt_cp.vl["DOORS"]['BR']])
 
     self.seatbelt_unlatched =  pt_cp.vl["SEATBELT"]['DRIVER_SEATBELT'] == 0
 
@@ -202,8 +205,8 @@ class CarState(object):
     self.steer_lkas.track = pt_cp.vl["STEER_RATE"]['LKAS_TRACK_STATE']
     self.steer_lkas.handsoff = pt_cp.vl["STEER_RATE"]['HANDS_OFF_5_SECONDS']
 
-    self.steer_not_allowed = self.steer_lkas.block == 1
-    self.low_speed_lockout = (v_wheel // CV.KPH_TO_MS) < 45
+    #self.steer_not_allowed = self.steer_lkas.block == 1
+    #self.low_speed_lockout = (v_wheel // CV.KPH_TO_MS) < 45
 
     #if self.CAM_LT.ctr != cam_cp.vl["CAM_LANETRACK"]['CTR'] and cam_cp.vl["CAM_LANETRACK"]['CTR'] == cam_cp.vl["CAM_LKAS"]['CTR']:
 

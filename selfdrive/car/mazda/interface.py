@@ -91,8 +91,8 @@ class CarInterface(object):
     ret.longitudinalTuning.kiV = [0.]
     
     
-    ret.openpilotLongitudinalControl = True
-    ret.stoppingControl = True
+    ret.openpilotLongitudinalControl = False
+    ret.stoppingControl = False
     ret.startAccel = 0.0
 
     ret.minEnableSpeed = -1
