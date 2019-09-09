@@ -12,7 +12,7 @@ class CanBus(object):
   def __init__(self):
     self.powertrain = 0
     self.obstacle = 1
-    self.cam = 1
+    self.cam = 2
 
 class CarInterface(object):
   def __init__(self, CP, CarController):

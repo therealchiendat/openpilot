@@ -8,8 +8,8 @@
 
 // CAN bus numbers
 #define MAZDA_MAIN 0
-#define MAZDA_AUX 2
-#define MAZDA_CAM 1
+#define MAZDA_AUX 1
+#define MAZDA_CAM 2
 
 #define MAZDA_MAX_STEER 2048
 
