@@ -69,6 +69,17 @@ class CarInterface(CarInterfaceBase):
 
       ret.lateralTuning.pid.kf = 0.00004
 
+    #FIXME
+    if candidate in [CAR.MAZDA3]:
+      ret.mass =  3071 * CV.LB_TO_KG + STD_CARGO_KG
+      ret.wheelbase = 2.7
+      ret.centerToFront = ret.wheelbase * 0.41
+      ret.steerRatio = 15.5
+
+      ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.2], [0.18]]
+
+      ret.lateralTuning.pid.kf = 0.00004
 
     ret.steerActuatorDelay = 0.1
     ret.steerRateCost = 1.0
