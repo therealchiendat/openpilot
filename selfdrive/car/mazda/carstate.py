@@ -142,7 +142,7 @@ class CarState():
       self.acc_active = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
       self.main_on = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
 
-      if self.acc_active != self.acc_active_last:
+    if self.acc_active != self.acc_active_last:
       self.v_cruise_pcm =  v_wheel // CV.KPH_TO_MS
       self.acc_active_last = self.acc_active
 
