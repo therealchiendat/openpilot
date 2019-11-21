@@ -2,7 +2,7 @@
 from common.kalman.simple_kalman import KF1D
 from selfdrive.config import Conversions as CV
 from selfdrive.can.parser import CANParser
-from selfdrive.car.mazda.values import DBC
+from selfdrive.car.mazda.values import DBC, CAR
 
 def get_powertrain_can_parser(CP, canbus):
   # this function generates lists for signal, messages and initial values
