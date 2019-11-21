@@ -138,7 +138,7 @@ class CarState():
     self.right_blinker_on = pt_cp.vl["BLINK_INFO"]['RIGHT_BLINK'] == 1
     self.blinker_on = self.left_blinker_on or self.right_blinker_on
 
-    if CP.carFingerprint == CAR.CX5:
+    if self.CP.carFingerprint == CAR.CX5:
       self.acc_active = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
       self.main_on = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
 
@@ -169,7 +169,7 @@ class CarState():
     # no steer below 45kph
     self.low_speed_lockout = (v_wheel // CV.KPH_TO_MS) < 45
 
-    if CP.carFingerprint == CAR.CX5:
+    if self.CP.carFingerprint == CAR.CX5:
       self.door_open = any([pt_cp.vl["DOORS"]['FL'],
                             pt_cp.vl["DOORS"]['FR'],
                             pt_cp.vl["DOORS"]['BL'],
