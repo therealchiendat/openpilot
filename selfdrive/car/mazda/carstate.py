@@ -107,6 +107,12 @@ class CarState():
     self.acc_active_last = False
     self.acc_active = False
 
+    self.door_open = False
+    self.seatbelt_unlatched =  False
+    self.steer_lkas.block = False
+    self.steer_lkas.track = False
+    self.steer_lkas.handsoff = False
+
     # vEgo kalman filter
     dt = 0.01
 
