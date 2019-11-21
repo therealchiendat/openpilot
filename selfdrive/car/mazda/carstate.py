@@ -113,6 +113,8 @@ class CarState():
     self.steer_lkas.track = False
     self.steer_lkas.handsoff = False
 
+    self.cam_lkas = 0
+          
     # vEgo kalman filter
     dt = 0.01
 

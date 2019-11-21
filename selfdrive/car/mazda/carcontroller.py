@@ -1,5 +1,5 @@
 from selfdrive.car.mazda import mazdacan
-from selfdrive.car.mazda.values import  DBC
+from selfdrive.car.mazda.values import  DBC, CAR
 from selfdrive.can.packer import CANPacker
 from selfdrive.car import apply_std_steer_torque_limits
 
@@ -46,7 +46,8 @@ class CarController():
       self.apply_steer_last = apply_steer
       ctr = (frame // P.STEER_STEP) % 16
 
-      can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
-                                                        CS.CP.carFingerprint, ctr, apply_steer,
-                                                        CS.cam_lkas))
+      if self.car_fingerprint == CAR.CX5:
+        can_sends.append(mazdacan.create_steering_control(self.packer_pt, canbus.powertrain,
+                                                          CS.CP.carFingerprint, ctr, apply_steer,
+                                                          CS.cam_lkas))
     return can_sends
