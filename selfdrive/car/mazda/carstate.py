@@ -12,25 +12,12 @@ def get_powertrain_can_parser(CP, canbus):
     ("RIGHT_BLINK", "BLINK_INFO", 0),
     ("STEER_ANGLE", "STEER", 0),
     ("STEER_ANGLE_RATE", "STEER_RATE", 0),
-    ("LKAS_BLOCK", "STEER_RATE", 0),
-    ("LKAS_TRACK_STATE", "STEER_RATE", 0),
-    ("HANDS_OFF_5_SECONDS", "STEER_RATE", 0),
     ("STEER_TORQUE_SENSOR", "STEER_TORQUE", 0),
     ("STEER_TORQUE_MOTOR", "STEER_TORQUE", 0),
     ("FL", "WHEEL_SPEEDS", 0),
     ("FR", "WHEEL_SPEEDS", 0),
     ("RL", "WHEEL_SPEEDS", 0),
     ("RR", "WHEEL_SPEEDS", 0),
-    ("CRZ_ACTIVE", "CRZ_CTRL", 0),
-    ("STANDSTILL","PEDALS", 0),
-    ("BRAKE_ON","PEDALS", 0),
-    ("GEAR","GEAR", 0),
-    ("DRIVER_SEATBELT", "SEATBELT", 0),
-    ("FL", "DOORS", 0),
-    ("FR", "DOORS", 0),
-    ("BL", "DOORS", 0),
-    ("BR", "DOORS", 0),
-    ("GAS_PEDAL_PRESSED", "CRZ_EVENTS", 0),
   ]
 
   checks = [
@@ -40,35 +27,59 @@ def get_powertrain_can_parser(CP, canbus):
     ("STEER_RATE", 83),
     ("STEER_TORQUE", 83),
     ("WHEEL_SPEEDS", 100),
-    ("CRZ_CTRL", 50),
-    ("CRZ_EVENTS", 50),
-    ("PEDALS", 50),
-    ("SEATBELT", 10),
-    ("DOORS", 10),
-    ("GEAR", 20),
   ]
+
+  if CP.carFingerprint == CAR.CX5:
+    signals += [
+      ("LKAS_BLOCK", "STEER_RATE", 0),
+      ("LKAS_TRACK_STATE", "STEER_RATE", 0),
+      ("HANDS_OFF_5_SECONDS", "STEER_RATE", 0),
+      ("CRZ_ACTIVE", "CRZ_CTRL", 0),
+      ("STANDSTILL","PEDALS", 0),
+      ("BRAKE_ON","PEDALS", 0),
+      ("GEAR","GEAR", 0),
+      ("DRIVER_SEATBELT", "SEATBELT", 0),
+      ("FL", "DOORS", 0),
+      ("FR", "DOORS", 0),
+      ("BL", "DOORS", 0),
+      ("BR", "DOORS", 0),
+      ("GAS_PEDAL_PRESSED", "CRZ_EVENTS", 0),
+    ]
+
+    checks += [
+      ("CRZ_CTRL", 50),
+      ("CRZ_EVENTS", 50),
+      ("PEDALS", 50),
+      ("SEATBELT", 10),
+      ("DOORS", 10),
+      ("GEAR", 20),
+    ]
 
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.powertrain)
 
 def get_cam_can_parser(CP, canbus):
-  signals = [
-    # sig_name, sig_address, default
 
-    ("LKAS_REQUEST",     "CAM_LKAS", 0),
-    ("CTR",              "CAM_LKAS", 0),
-    ("ERR_BIT_1",        "CAM_LKAS", 0),
-    ("LDW",              "CAM_LKAS", 0),
-    ("LINE_NOT_VISIBLE", "CAM_LKAS", 0),
-    ("BIT_1",            "CAM_LKAS", 0),
-    ("ERR_BIT_2",        "CAM_LKAS", 0),
-    ("BIT_2",            "CAM_LKAS", 0),
-    ("CHKSUM",           "CAM_LKAS", 0),
-  ]
+  signals = [ ]
+  checks = [ ]
 
-  checks = [
-    # sig_address, frequency
-    ("CAM_LKAS",      16),
-  ]
+  if CP.carFingerprint == CAR.CX5:
+    signals += [
+      # sig_name, sig_address, default
+      ("LKAS_REQUEST",     "CAM_LKAS", 0),
+      ("CTR",              "CAM_LKAS", 0),
+      ("ERR_BIT_1",        "CAM_LKAS", 0),
+      ("LDW",              "CAM_LKAS", 0),
+      ("LINE_NOT_VISIBLE", "CAM_LKAS", 0),
+      ("BIT_1",            "CAM_LKAS", 0),
+      ("ERR_BIT_2",        "CAM_LKAS", 0),
+      ("BIT_2",            "CAM_LKAS", 0),
+      ("CHKSUM",           "CAM_LKAS", 0),
+    ]
+
+    checks += [
+      # sig_address, frequency
+      ("CAM_LKAS",      16),
+    ]
 
   return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, canbus.cam)
 
@@ -94,6 +105,7 @@ class CarState():
     self.steer_not_allowed = False
     self.main_on = False
     self.acc_active_last = False
+    self.acc_active = False
 
     # vEgo kalman filter
     dt = 0.01
@@ -126,10 +138,11 @@ class CarState():
     self.right_blinker_on = pt_cp.vl["BLINK_INFO"]['RIGHT_BLINK'] == 1
     self.blinker_on = self.left_blinker_on or self.right_blinker_on
 
-    self.acc_active = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
-    self.main_on = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
+    if CP.carFingerprint == CAR.CX5:
+      self.acc_active = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
+      self.main_on = pt_cp.vl["CRZ_CTRL"]['CRZ_ACTIVE']
 
-    if self.acc_active != self.acc_active_last:
+      if self.acc_active != self.acc_active_last:
       self.v_cruise_pcm =  v_wheel // CV.KPH_TO_MS
       self.acc_active_last = self.acc_active
 
@@ -150,25 +163,24 @@ class CarState():
 
     self.standstill = self.v_ego_raw < 0.01
 
-    self.door_open = any([pt_cp.vl["DOORS"]['FL'],
-                          pt_cp.vl["DOORS"]['FR'],
-                          pt_cp.vl["DOORS"]['BL'],
-                          pt_cp.vl["DOORS"]['BR']])
-
-    self.seatbelt_unlatched =  pt_cp.vl["SEATBELT"]['DRIVER_SEATBELT'] == 0
-
     self.steer_error = False
     self.brake_error = False
-
-    # No steer if block signal is on
-    self.steer_lkas.block = pt_cp.vl["STEER_RATE"]['LKAS_BLOCK']
-    # track driver torque, on if torque is not detected
-    self.steer_lkas.track = pt_cp.vl["STEER_RATE"]['LKAS_TRACK_STATE']
-    # On if no driver torque the last 5 seconds
-    self.steer_lkas.handsoff = pt_cp.vl["STEER_RATE"]['HANDS_OFF_5_SECONDS']
-
     #self.steer_not_allowed = self.steer_lkas.block == 1
     # no steer below 45kph
     self.low_speed_lockout = (v_wheel // CV.KPH_TO_MS) < 45
 
-    self.cam_lkas = cam_cp.vl["CAM_LKAS"]
+    if CP.carFingerprint == CAR.CX5:
+      self.door_open = any([pt_cp.vl["DOORS"]['FL'],
+                            pt_cp.vl["DOORS"]['FR'],
+                            pt_cp.vl["DOORS"]['BL'],
+                            pt_cp.vl["DOORS"]['BR']])
+
+      self.seatbelt_unlatched =  pt_cp.vl["SEATBELT"]['DRIVER_SEATBELT'] == 0
+      # No steer if block signal is on
+      self.steer_lkas.block = pt_cp.vl["STEER_RATE"]['LKAS_BLOCK']
+      # track driver torque, on if torque is not detected
+      self.steer_lkas.track = pt_cp.vl["STEER_RATE"]['LKAS_TRACK_STATE']
+      # On if no driver torque the last 5 seconds
+      self.steer_lkas.handsoff = pt_cp.vl["STEER_RATE"]['HANDS_OFF_5_SECONDS']
+
+      self.cam_lkas = cam_cp.vl["CAM_LKAS"]
