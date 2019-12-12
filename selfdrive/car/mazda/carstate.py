@@ -62,6 +62,7 @@ def get_cam_can_parser(CP, canbus):
     ("BIT_1",            "CAM_LKAS", 0),
     ("ERR_BIT_2",        "CAM_LKAS", 0),
     ("BIT_2",            "CAM_LKAS", 0),
+    ("BIT_3",            "CAM_LKAS", 0),
     ("CHKSUM",           "CAM_LKAS", 0),
   ]
 

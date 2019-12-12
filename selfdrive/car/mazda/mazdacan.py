@@ -16,11 +16,12 @@ def create_steering_control(packer, bus, car_fingerprint, ctr, apply_steer, lkas
   hi = tmp >> 8
 
   b1 = int(lkas["BIT_1"])
-  b2 = int(lkas[ "BIT_2"])
+  b2 = int(lkas["BIT_2"])
+  b3 = int(lkas["BIT_3"])
   ldw = int(lkas["LDW"])
   lnv = int(lkas["LINE_NOT_VISIBLE"])
 
-  csum = 241 - ctr - (hi - 8) - lo - (lnv << 3) - (b1 << 5)  - (b2 << 1) - (ldw << 7)
+  csum = 241 - ctr - (hi - 8) - lo - (lnv << 3) - (b1 << 5)  - (b2 << 1) - (b3 << 4)  - (ldw << 7)
 
   if csum < 0:
       csum = csum + 256
@@ -33,6 +34,7 @@ def create_steering_control(packer, bus, car_fingerprint, ctr, apply_steer, lkas
       "LKAS_REQUEST"     : apply_steer,
       "BIT_1"            : b1,
       "BIT_2"            : b2,
+      "BIT_3"            : b3,
       "LDW"              : ldw,
       "LINE_NOT_VISIBLE" : lnv,
       "ERR_BIT_1"        : 0,
