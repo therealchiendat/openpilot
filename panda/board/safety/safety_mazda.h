@@ -28,7 +28,7 @@
 #define MAZDA_LKAS_DISABLE_SPEED 4500
 
 const CanMsg MAZDA_TX_MSGS[] = {{MAZDA_LKAS, 0, 8}, {MAZDA_CRZ_BTNS, 0, 8}};
-bool mazda_lkas_allowed = false;
+bool mazda_lkas_allowed = true;
 
 AddrCheckStruct mazda_rx_checks[] = {
   {.msg = {{MAZDA_CRZ_CTRL,     0, 8, .expected_timestep = 20000U}}},
@@ -56,7 +56,7 @@ static int mazda_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
       if (speed > MAZDA_LKAS_ENABLE_SPEED) {
         mazda_lkas_allowed = true;
       } else if (speed < MAZDA_LKAS_DISABLE_SPEED) {
-        mazda_lkas_allowed = false;
+        //mazda_lkas_allowed = false;
       } else {
         // Misra-able appeasment block!
       }
@@ -187,7 +187,7 @@ static void mazda_init(int16_t param) {
   UNUSED(param);
   controls_allowed = false;
   relay_malfunction_reset();
-  mazda_lkas_allowed = false;
+  mazda_lkas_allowed = true;
 }
 
 const safety_hooks mazda_hooks = {
