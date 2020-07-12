@@ -112,7 +112,7 @@ static int mazda_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
       // if we see lkas msg on MAZDA_MAIN bus then relay is closed
       if ((safety_mode_cnt > RELAY_TRNS_TIMEOUT) && (addr == MAZDA_LKAS)) {
-        relay_malfunction_set();
+        //relay_malfunction_set();
       }
     }
   }
