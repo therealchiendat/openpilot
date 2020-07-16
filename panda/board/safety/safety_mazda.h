@@ -29,6 +29,8 @@
 
 const CanMsg MAZDA_TX_MSGS[] = {{MAZDA_LKAS, 0, 8}, {MAZDA_CRZ_BTNS, 0, 8}};
 bool mazda_lkas_allowed = true;
+bool op_on = false;
+bool hw_passthru = false;
 
 AddrCheckStruct mazda_rx_checks[] = {
   {.msg = {{MAZDA_CRZ_CTRL,     0, 8, .expected_timestep = 20000U}}},
@@ -111,8 +113,10 @@ static int mazda_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
       }
 
       // if we see lkas msg on MAZDA_MAIN bus then relay is closed
-      if ((safety_mode_cnt > RELAY_TRNS_TIMEOUT) && (addr == MAZDA_LKAS)) {
-        relay_malfunction_set();
+      //if ((safety_mode_cnt > RELAY_TRNS_TIMEOUT) && (addr == MAZDA_LKAS)) {
+      if (addr == MAZDA_LKAS) {
+        //relay_malfunction_set();
+        hw_passthru = true;
       }
     }
   }
@@ -140,6 +144,8 @@ static int mazda_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
       int desired_torque = (((GET_BYTE(to_send, 0) & 0x0f) << 8) | GET_BYTE(to_send, 1)) - MAZDA_MAX_STEER;
       bool violation = 0;
       uint32_t ts = TIM2->CNT;
+
+      op_on = true;
 
       if (controls_allowed) {
 
@@ -187,12 +193,12 @@ static int mazda_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
 
 static int mazda_fwd_hook(int bus, CAN_FIFOMailBox_TypeDef *to_fwd) {
   int bus_fwd = -1;
-  if (!relay_malfunction) {
+  if (!hw_passthru) {
     int addr = GET_ADDR(to_fwd);
     if (bus == MAZDA_MAIN) {
       bus_fwd = MAZDA_CAM;
     } else if (bus == MAZDA_CAM) {
-      if (!(addr == MAZDA_LKAS)) {
+      if (!op_on || !(addr == MAZDA_LKAS)) {
         bus_fwd = MAZDA_MAIN;
       }
     } else {
@@ -207,6 +213,8 @@ static void mazda_init(int16_t param) {
   controls_allowed = false;
   relay_malfunction_reset();
   mazda_lkas_allowed = true;
+  op_on = false;
+  hw_passthru = false;
 }
 
 const safety_hooks mazda_hooks = {
