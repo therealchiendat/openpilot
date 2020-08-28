@@ -13,20 +13,22 @@ from selfdrive.car.toyota.values import FW_VERSIONS as TOYOTA_FW_VERSIONS
 from selfdrive.car.honda.values import FW_VERSIONS as HONDA_FW_VERSIONS
 from selfdrive.car.hyundai.values import FW_VERSIONS as HYUNDAI_FW_VERSIONS
 from selfdrive.car.volkswagen.values import FW_VERSIONS as VW_FW_VERSIONS
+from selfdrive.car.mazda.values import FW_VERSIONS as MAZDA_FW_VERSIONS
 
 from selfdrive.car.toyota.values import FINGERPRINTS as TOYOTA_FINGERPRINTS
 from selfdrive.car.honda.values import FINGERPRINTS as HONDA_FINGERPRINTS
 from selfdrive.car.hyundai.values import FINGERPRINTS as HYUNDAI_FINGERPRINTS
+
 from selfdrive.car.volkswagen.values import FINGERPRINTS as VW_FINGERPRINTS
+from selfdrive.car.mazda.values import FINGERPRINTS as MAZDA_FINGERPRINTS
 
 NO_API = "NO_API" in os.environ
-SUPPORTED_CARS = list(TOYOTA_FINGERPRINTS.keys()) + list(HONDA_FINGERPRINTS.keys()) + list(HYUNDAI_FINGERPRINTS.keys())+ list(VW_FINGERPRINTS.keys())
+SUPPORTED_CARS = list(TOYOTA_FINGERPRINTS.keys()) + list(HONDA_FINGERPRINTS.keys()) + list(HYUNDAI_FINGERPRINTS.keys())+ list(VW_FINGERPRINTS.keys()) + list(MAZDA_FINGERPRINTS.keys())
 
 try:
   from xx.pipeline.c.CarState import migration
 except ImportError:
   migration = {}
-
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(description='Run FW fingerprint on Qlog of route or list of routes')
@@ -119,7 +121,7 @@ if __name__ == "__main__":
 
           print("Mismatches")
           found = False
-          for car_fws in [TOYOTA_FW_VERSIONS, HONDA_FW_VERSIONS, HYUNDAI_FW_VERSIONS, VW_FW_VERSIONS]:
+          for car_fws in [TOYOTA_FW_VERSIONS, HONDA_FW_VERSIONS, HYUNDAI_FW_VERSIONS, VW_FW_VERSIONS, MAZDA_FW_VERSIONS]:
             if live_fingerprint in car_fws:
               found = True
               expected = car_fws[live_fingerprint]

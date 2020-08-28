@@ -39,7 +39,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kf = 0.00006
     elif candidate == CAR.CX9:
       ret.mass = 4217 * CV.LB_TO_KG + STD_CARGO_KG
-      ret.wheelbase = 3.1
+      ret.wheelbase = 2.9
       ret.steerRatio = 17.6
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.19], [0.019]]
