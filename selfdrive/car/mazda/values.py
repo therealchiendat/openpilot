@@ -17,9 +17,9 @@ class CarControllerParams:
   STEER_DRIVER_FACTOR = 1         # from dbc
 
 class CAR:
-  CX5 = "Mazda CX-5 2017"
-  CX9 = "Mazda CX-9 2017"
-  Mazda3 = "Mazda3 2017"
+  CX5 = "Mazda CX-5"
+  CX9 = "Mazda CX-9"
+  Mazda3 = "Mazda 3"
 
 class LKAS_LIMITS:
   STEER_THRESHOLD = 15
@@ -69,6 +69,154 @@ FINGERPRINTS = {
       64: 8, 70: 8, 80: 8, 117: 8, 118: 8, 120: 8, 121: 8, 130: 8, 134: 8, 145: 8, 154: 8, 155: 8, 157: 8, 158: 8, 159: 8, 253: 8, 304: 8, 305: 8, 357: 8, 358: 8, 359: 8, 512: 8, 514: 8, 515: 8, 529: 8, 533: 8, 535: 8, 539: 8, 540: 8, 541: 8, 542: 8, 543: 8, 552: 8, 576: 8, 577: 8, 578: 8, 579: 8, 580: 8, 581: 8, 582: 8, 605: 8, 606: 8, 607: 8, 628: 8, 832: 8, 836: 8, 863: 8, 865: 8, 866: 8, 867: 8, 868: 8, 869: 8, 870: 8, 976: 8, 977: 8, 978: 8, 1034: 8, 1045: 8, 1056: 8, 1061: 8, 1067: 8, 1070: 8, 1078: 8, 1080: 8, 1085: 8, 1086: 8, 1088: 8, 1093: 8, 1108: 8, 1114: 8, 1115: 8, 1116: 8, 1143: 8, 1147: 8, 1154: 8, 1157: 8, 1160: 8, 1163: 8, 1166: 8, 1177: 8, 1178: 8, 1179: 8, 1180: 8, 1182: 8, 1183: 8, 1233: 8, 1236: 8, 1237: 8, 1238: 8, 1239: 8, 1241: 8, 1242: 8, 1243: 8, 1244: 8, 1264: 8, 1266: 8, 1267: 8, 1269: 8, 1270: 8, 1271: 8, 1272: 8, 1274: 8, 1275: 8, 1277: 8, 1278: 8, 1409: 8, 1416: 8, 1425: 8, 1430: 8, 1435: 8, 1440: 8, 1456: 8, 1479: 8
     }
   ],
+}
+
+
+FW_VERSIONS = {
+  #
+  # Mazda CX-5
+  #
+  CAR.CX5: {
+    (Ecu.eps, 0x730, None): [
+      b'KJ01-3210X-G-00\x00\x00\x00\x00\x00\x00\x00\x00\x00', # 2017
+      b'KJ01-3210X-M-00\x00\x00\x00\x00\x00\x00\x00\x00\x00', # 2021
+    ],
+    (Ecu.engine, 0x7e0, None): [
+      b'PYNF-188K2-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'PX2G-188K2-D\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.fwdRadar, 0x764, None): [
+      b'K123-67XK2-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'K131-67XK2-E\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.esp, 0x760, None): [
+      b'K123-437K2-E\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'KBJ5-437K2-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.fwdCamera, 0x706, None): [
+      b'B61L-67XK2-T\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'GSH7-67XK2-N\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'PYNC-21PS1-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'PYB2-21PS1-G\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # IC - Instrument Cluster
+    (Ecu.combinationMeter, 0x720, None): [
+      b'K157-554K2-V\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'KGD1-554K2-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # SSU - Start Stop Unit
+    (Ecu.ssu, 0x731, None): [
+      b'GMB6-675S1-A-05\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'KJN4-675S1- -00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # Air Bag
+    (Ecu.srs, 0x737, None): [
+      b'KB7W-57KK2-A2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'KB7W-57KK2-B0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # Electronic parking brake
+    (Ecu.epb, 0x756, None): [
+      b'K123-430K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'KN3L-430K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+  },
+
+  #
+  # Mazda CX-9
+  #
+  CAR.CX9 : {
+    (Ecu.eps, 0x730, None): [
+      b'KJ01-3210X-L-00\x00\x00\x00\x00\x00\x00\x00\x00\x00', # 2019
+      b'KJ01-3210X-L-00\x00\x00\x00\x00\x00\x00\x00\x00\x00', # 2020
+    ],
+    (Ecu.engine, 0x7e0, None): [
+      b'PX23-188K2-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'PXN8-188K2-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.fwdRadar, 0x764, None): [
+      b'K131-67XK2-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'K131-67XK2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.esp, 0x760, None): [
+      b'TN40-437K2-A\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'TA0B-437K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.fwdCamera, 0x706, None): [
+      b'B61L-67XK2-V\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'GSH7-67XK2-K\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'PYD5-21PS1-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'PXM7-21PS1-A\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # IC - Instrument Cluster
+    (Ecu.combinationMeter, 0x720, None): [
+      b'TN41-554K2-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'TA0D-554K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # SSU - Start Stop Unit
+    (Ecu.ssu, 0x731, None): [
+      b'B63C-675S1-A-07\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'D43N-675S1-A-11\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # Air Bag
+    (Ecu.srs, 0x737, None): [
+      b'TK48-57KK2-B41\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'TK48-57KK2-A40\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # Electronic parking brake
+    (Ecu.epb, 0x756, None): [
+      b'TN39-430K2-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'TA0A-430K2-A\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+  },
+
+  #
+  # Mazda 3
+  #
+  CAR.Mazda3: {
+    (Ecu.eps, 0x730, None): [
+      b'K070-3210X-C-00\x00\x00\x00\x00\x00\x00\x00\x00\x00', # 2017
+      b'KR11-3210X-K-00\x00\x00\x00\x00\x00\x00\x00\x00\x00', # 2018
+    ],
+    (Ecu.engine, 0x7e0, None): [
+      b'P5JD-188K2-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'PYKC-188K2-D\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.fwdRadar, 0x764, None): [
+      b'K131-67XK2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'B63C-67XK2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.esp, 0x760, None): [
+      b'B45A-437AS-0-08\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'B45A-437AS-0-08\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.fwdCamera, 0x706, None): [
+      b'B61L-67XK2-P\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'B61L-67XK2-T\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'PYKE-21PS1-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # IC - Instrument Cluster
+    (Ecu.combinationMeter, 0x720, None): [
+      b'B63E-554K2-A\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # SSU - Start Stop Unit
+    (Ecu.ssu, 0x731, None): [
+      b'GMB6-675S1-A-07\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # Air Bag
+    (Ecu.srs, 0x737, None): [
+      b'BABF-66853---60\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # Electronic parking brake
+    (Ecu.epb, 0x756, None): [
+      b'GV9S-430K2-H\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+  }
 }
 
 
