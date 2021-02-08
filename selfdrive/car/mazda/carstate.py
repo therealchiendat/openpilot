@@ -161,24 +161,4 @@ class CarState(CarStateBase):
     signals = [ ]
     checks = [ ]
 
-    if False and (CP.carFingerprint == CAR.CX5):
-      signals += [
-        # sig_name, sig_address, default
-        ("LKAS_REQUEST",     "CAM_LKAS", 0),
-        ("CTR",              "CAM_LKAS", 0),
-        ("ERR_BIT_1",        "CAM_LKAS", 0),
-        ("LINE_NOT_VISIBLE", "CAM_LKAS", 0),
-        ("LDW",              "CAM_LKAS", 0),
-        ("BIT_1",            "CAM_LKAS", 1),
-        ("ERR_BIT_2",        "CAM_LKAS", 0),
-        ("STEERING_ANGLE",   "CAM_LKAS", 0),
-        ("ANGLE_ENABLED",    "CAM_LKAS", 0),
-        ("CHKSUM",           "CAM_LKAS", 0),
-      ]
-
-      checks += [
-        # sig_address, frequency
-        ("CAM_LKAS",      16),
-      ]
-
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, 2)
