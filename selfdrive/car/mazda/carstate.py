@@ -88,8 +88,8 @@ class CarState(CarStateBase):
 
     self.acc_active_last = ret.cruiseState.enabled
 
-    self.cam_lkas = cp_cam.vl["CAM_LKAS"]
-    ret.steerError = cp_cam.vl["CAM_LKAS"]['ERR_BIT_1'] == 1
+    #self.cam_lkas = cp_cam.vl["CAM_LKAS"]
+    ret.steerError = False #cp_cam.vl["CAM_LKAS"]['ERR_BIT_1'] == 1
 
     return ret
 
@@ -161,7 +161,7 @@ class CarState(CarStateBase):
     signals = [ ]
     checks = [ ]
 
-    if CP.carFingerprint == CAR.CX5:
+    if False and (CP.carFingerprint == CAR.CX5):
       signals += [
         # sig_name, sig_address, default
         ("LKAS_REQUEST",     "CAM_LKAS", 0),
