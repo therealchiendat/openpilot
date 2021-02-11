@@ -45,8 +45,8 @@ const int MAZDA_RX_CHECKS_LEN = sizeof(mazda_rx_checks) / sizeof(mazda_rx_checks
 static int mazda_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
   bool valid;
 
-  valid = 1; //addr_safety_check(to_push, mazda_rx_checks, MAZDA_RX_CHECKS_LEN,
-            //                NULL, NULL, NULL);
+  valid = addr_safety_check(to_push, mazda_rx_checks, MAZDA_RX_CHECKS_LEN,
+                            NULL, NULL, NULL);
   if (valid) {
     int bus = GET_BUS(to_push);
     int addr = GET_ADDR(to_push);

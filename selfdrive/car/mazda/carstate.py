@@ -88,8 +88,9 @@ class CarState(CarStateBase):
 
     self.acc_active_last = ret.cruiseState.enabled
 
-    #self.cam_lkas = cp_cam.vl["CAM_LKAS"]
-    ret.steerError = False #cp_cam.vl["CAM_LKAS"]['ERR_BIT_1'] == 1
+    # self.cam_lkas = cp_cam.vl["CAM_LKAS"]
+    ret.steerError = False
+    # cp_cam.vl["CAM_LKAS"]['ERR_BIT_1'] == 1
 
     return ret
 
