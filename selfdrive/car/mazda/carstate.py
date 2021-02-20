@@ -89,6 +89,7 @@ class CarState(CarStateBase):
     self.acc_active_last = ret.cruiseState.enabled
 
     # self.cam_lkas = cp_cam.vl["CAM_LKAS"]
+    self.cam_settings = cp_cam.vl["CAM_SETTINGS"]
     ret.steerError = False
     # cp_cam.vl["CAM_LKAS"]['ERR_BIT_1'] == 1
 
@@ -159,7 +160,20 @@ class CarState(CarStateBase):
 
   @staticmethod
   def get_cam_can_parser(CP):
-    signals = [ ]
-    checks = [ ]
+    signals = [
+      ("LKAS_SENSETIVITY",      "CAM_SETTINGS", 1),
+      ("WARNING",               "CAM_SETTINGS", 0),
+      ("NEW_SIGNAL_1",          "CAM_SETTINGS", 0),
+      ("LKAS_ASSIT_TIMING",     "CAM_SETTINGS", 0),
+      ("NEW_SIGNAL_2",          "CAM_SETTINGS", 0),
+      ("LKAS_INERVENTION_ON1",  "CAM_SETTINGS", 1),
+      ("LANEE_DEPARTURE_ALERT", "CAM_SETTINGS", 2),
+      ("ILKAS_NTERVENTION_ON2", "CAM_SETTINGS", 1),
+      ("SBS_WARNING_DISTANCE",  "CAM_SETTINGS", 2),
+      ("SBS_SCBC",              "CAM_SETTINGS", 2),
+    ]
+    checks = [
+        ("CAM_SETTINGS", 10),
+    ]
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, 2)

@@ -1,6 +1,6 @@
 from selfdrive.car.mazda.values import CAR, Buttons
 
-def create_steering_control(packer, car_fingerprint, frame, apply_steer, lkas):
+def create_steering_control(packer, car_fingerprint, frame, apply_steer):
 
   tmp = apply_steer + 2048
 
@@ -55,6 +55,23 @@ def create_steering_control(packer, car_fingerprint, frame, apply_steer, lkas):
     }
 
   return packer.make_can_msg("CAM_LKAS", 0, values)
+
+def create_cam_settings(packer, car_fingerprint, st):
+  if car_fingerprint == CAR.CX5:
+    values = {
+      "LKAS_SENSETIVITY"      : int(st["LKAS_SENSETIVITY"]),
+      "WARNING"               : int(st["WARNING"]),
+      "NEW_SIGNAL_1"          : int(st["NEW_SIGNAL_1"]),
+      "LKAS_ASSIT_TIMING"     : int(st["LKAS_ASSIT_TIMING"]),
+      "NEW_SIGNAL_2"          : int(st["NEW_SIGNAL_2"]),
+      "LKAS_INERVENTION_ON1"  : 1,
+      "LANEE_DEPARTURE_ALERT" : int(st["LANEE_DEPARTURE_ALERT"]),
+      "ILKAS_NTERVENTION_ON2" : 1,
+      "SBS_WARNING_DISTANCE"  : int(st["SBS_WARNING_DISTANCE"]),
+      "SBS_SCBC"              : int(st["SBS_SCBC"])
+    }
+
+  return packer.make_can_msg("CAM_SETTINGS", 0, values)
 
 
 def create_button_cmd(packer, car_fingerprint, button):

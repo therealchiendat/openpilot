@@ -5,6 +5,8 @@
 #define MAZDA_STEER_TORQUE  0x240
 #define MAZDA_ENGINE_DATA   0x202
 #define MAZDA_PEDALS        0x165
+#define MAZDA_CAM_SETTINGS  0x485
+
 
 // CAN bus numbers
 #define MAZDA_MAIN 0
@@ -198,7 +200,7 @@ static int mazda_fwd_hook(int bus, CAN_FIFOMailBox_TypeDef *to_fwd) {
     if (bus == MAZDA_MAIN) {
       bus_fwd = MAZDA_CAM;
     } else if (bus == MAZDA_CAM) {
-      if (!op_on || !(addr == MAZDA_LKAS)) {
+      if ( (!op_on || !(addr == MAZDA_LKAS || addr == MAZDA_CAM_SETTINGS))) {
         bus_fwd = MAZDA_MAIN;
       }
     } else {
