@@ -29,7 +29,7 @@
 #define MAZDA_LKAS_ENABLE_SPEED  5200
 #define MAZDA_LKAS_DISABLE_SPEED 4500
 
-const CanMsg MAZDA_TX_MSGS[] = {{MAZDA_LKAS, 0, 8}, {MAZDA_CRZ_BTNS, 0, 8}};
+const CanMsg MAZDA_TX_MSGS[] = {{MAZDA_LKAS, 0, 8}, {MAZDA_CRZ_BTNS, 0, 8}, {MAZDA_CAM_SETTINGS, 0, 8} };
 bool mazda_lkas_allowed = true;
 bool op_on = false;
 bool hw_passthru = false;
