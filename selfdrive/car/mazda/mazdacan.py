@@ -57,20 +57,18 @@ def create_steering_control(packer, car_fingerprint, frame, apply_steer):
   return packer.make_can_msg("CAM_LKAS", 0, values)
 
 def create_cam_settings(packer, car_fingerprint, st):
-  if car_fingerprint == CAR.CX5:
-    values = {
-      "LKAS_SENSETIVITY"      : 1, # int(st["LKAS_SENSETIVITY"]),
-      "WARNING"               : 0, # int(st["WARNING"]),
-      "NEW_SIGNAL_1"          : 0, # int(st["NEW_SIGNAL_1"]),
-      "LKAS_ASSIT_TIMING"     : 0, # int(st["LKAS_ASSIT_TIMING"]),
-      "NEW_SIGNAL_2"          : 0, # int(st["NEW_SIGNAL_2"]),
-      "LKAS_INERVENTION_ON1"  : 1,
-      "LANEE_DEPARTURE_ALERT" : 2, # int(st["LANEE_DEPARTURE_ALERT"]),
-      "ILKAS_NTERVENTION_ON2" : 1,
-      "SBS_WARNING_DISTANCE"  : 2, # int(st["SBS_WARNING_DISTANCE"]),
-      "SBS_SCBC"              : 2 # int(st["SBS_SCBC"])
-    }
-
+  values = {
+    "LKAS_SENSETIVITY"      : 1, # int(st["LKAS_SENSETIVITY"]),
+    "WARNING"               : 0, # int(st["WARNING"]),
+    "NEW_SIGNAL_1"          : 0, # int(st["NEW_SIGNAL_1"]),
+    "LKAS_ASSIT_TIMING"     : 0, # int(st["LKAS_ASSIT_TIMING"]),
+    "NEW_SIGNAL_2"          : 0, # int(st["NEW_SIGNAL_2"]),
+    "LKAS_INERVENTION_ON1"  : 1,
+    "LANEE_DEPARTURE_ALERT" : 2, # int(st["LANEE_DEPARTURE_ALERT"]),
+    "ILKAS_NTERVENTION_ON2" : 1,
+    "SBS_WARNING_DISTANCE"  : 2, # int(st["SBS_WARNING_DISTANCE"]),
+    "SBS_SCBC"              : 2  # int(st["SBS_SCBC"])
+  }
   return packer.make_can_msg("CAM_SETTINGS", 0, values)
 
 
