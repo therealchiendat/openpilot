@@ -1,5 +1,6 @@
 // CAN msgs we care about
 #define MAZDA_LKAS          0x243
+#define MAZDA_LKAS2         0x249
 #define MAZDA_CRZ_CTRL      0x21c
 #define MAZDA_CRZ_BTNS      0x09d
 #define MAZDA_STEER_TORQUE  0x240
@@ -27,7 +28,7 @@
 #define MAZDA_LKAS_ENABLE_SPEED  5200
 #define MAZDA_LKAS_DISABLE_SPEED 4500
 
-const CanMsg MAZDA_TX_MSGS[] = {{MAZDA_LKAS, 0, 8}, {MAZDA_CRZ_BTNS, 0, 8}};
+const CanMsg MAZDA_TX_MSGS[] = {{MAZDA_LKAS, 0, 8}, {MAZDA_CRZ_BTNS, 0, 8}, {MAZDA_LKAS2, 0, 8}};
 bool mazda_lkas_allowed = true;
 
 AddrCheckStruct mazda_rx_checks[] = {
