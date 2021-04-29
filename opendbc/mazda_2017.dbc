@@ -167,7 +167,7 @@ BO_ 581 CAM_IDK3: 8 XXX
  SG_ S8 : 48|8@1+ (1,0) [0|255] "" XXX
  SG_ S9 : 56|8@1+ (1,0) [0|255] "" XXX
 
-BO_ 584 CAM_LKAS2: 8 XXX
+BO_ 585 CAM_LKAS2: 8 XXX
  SG_ CTR : 7|4@0+ (1,0) [0|15] "" XXX
  SG_ ERR_BIT_1 : 16|1@0+ (1,0) [0|1] "" XXX
  SG_ CHKSUM : 63|8@0+ (1,0) [0|15] "" XXX
