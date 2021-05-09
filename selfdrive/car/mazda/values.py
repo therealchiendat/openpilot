@@ -8,13 +8,13 @@ Ecu = car.CarParams.Ecu
 # Steer torque limits
 
 class CarControllerParams:
-  STEER_MAX = 600                 # max_steer 2048
-  STEER_STEP = 1                  # how often we update the steer cmd
+  STEER_MAX = 800                # theoretical max_steer 2047
   STEER_DELTA_UP = 10             # torque increase per refresh
-  STEER_DELTA_DOWN = 20           # torque decrease per refresh
+  STEER_DELTA_DOWN = 25           # torque decrease per refresh
   STEER_DRIVER_ALLOWANCE = 15     # allowed driver torque before start limiting
   STEER_DRIVER_MULTIPLIER = 1     # weight driver torque
   STEER_DRIVER_FACTOR = 1         # from dbc
+  STEER_ERROR_MAX = 350           # max delta between torque cmd and torque motor
 
 class CAR:
   CX5 = "Mazda CX-5"
