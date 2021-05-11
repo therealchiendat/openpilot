@@ -74,19 +74,19 @@ FINGERPRINTS = {
 
 FW_VERSIONS = {
   CAR.CX5: {
-    (Ecu.esp, 0x7b0, None): [
+    (Ecu.esp, 0x760, None): [
       b'K123-437K2-E\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
     ],
-    (Ecu.eps, 0x7a1, None): [
+    (Ecu.eps, 0x730, None): [
       b'F152607060\x00\x00\x00\x00\x00\x00'
     ],
     (Ecu.engine, 0x7e0, None): [
       b'PYNF-188K2-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
     ],
-    (Ecu.fwdRadar, 0x750, 0xf): [
+    (Ecu.fwdRadar, 0x764, None): [
       b'K123-67XK2-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
     ],
-    (Ecu.fwdCamera, 0x750, 0x6d): [
+    (Ecu.fwdCamera, 0x706, None): [
       b'B61L-67XK2-T\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
     ],
   },
