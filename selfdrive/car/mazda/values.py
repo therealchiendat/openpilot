@@ -79,20 +79,86 @@ FINGERPRINTS = {
 FW_VERSIONS = {
   CAR.CX5: {
     (Ecu.eps, 0x730, None): [
-      b'KJ01-3210X-G-00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+      b'KJ01-3210X-G-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'KJ01-3210X-M-00\000\000\000\000\000\000\000\000\000',
     ],
     (Ecu.engine, 0x7e0, None): [
-      b'PYNF-188K2-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+      b'PYNF-188K2-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'PX2G-188K2-D\000\000\000\000\000\000\000\000\000\000\000\000',
     ],
     (Ecu.fwdRadar, 0x764, None): [
-      b'K123-67XK2-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+      b'K123-67XK2-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'K131-67XK2-E\000\000\000\000\000\000\000\000\000\000\000\000',
     ],
     (Ecu.esp, 0x760, None): [
-      b'K123-437K2-E\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+      b'K123-437K2-E\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'KBJ5-437K2-B\000\000\000\000\000\000\000\000\000\000\000\000',
     ],
     (Ecu.fwdCamera, 0x706, None): [
-      b'B61L-67XK2-T\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+      b'B61L-67XK2-T\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'GSH7-67XK2-N\000\000\000\000\000\000\000\000\000\000\000\000',
     ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'\xf1\x88PYNC-21PS1-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # HUD - Head Up Display
+    (Ecu.hud, 0x7b2, None): [
+      b'KB7W-55HK2-E\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # IC - Instrument Cluster
+    (Ecu.combinationMeter, 0x720, None): [
+      b'K157-554K2-V\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # Air Bag
+    (Ecu.srs, 0x737, None): [
+      b'KB7W-57KK2-A2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # F_BCM - Front Body Control Module
+    (Ecu.unknown, 0x726, None): [
+      b'TK52-675X2-C-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      ],
+    # SSU - Start Stop Unit
+    (Ecu.unknown, 0x731, None): [
+      b'GMB6-675S1-A-05\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # R_BCM - Rear Body Control Module ?
+    (Ecu.unknown, 0x744, None): [
+      b'B62W-675J1-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # BSM - Blind Spot Monitoring ?
+    (Ecu.unknown, 0x7c6, None): [
+      b'\x01KB8C-67YK6-\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    # CONTROL. Module. UNIT. Engine. Transfer Case?
+    (Ecu.unknown, 0x761, None): [
+      b'SH9N-189K2-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    #
+    (Ecu.unknown, 0x756, None): [
+      b'K123-430K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    #
+    (Ecu.unknown, 0x733, None): [
+      b'K123-61190-0401-N5693\x00\x00\x00'
+    ],
+  },
+
+  CAR.CX9 : {
+    (Ecu.eps, 0x730, None): [
+      b'KJ01-3210X-L-00\000\000\000\000\000\000\000\000\000',
+    ],
+    (Ecu.engine, 0x7e0, None): [
+      b'PX23-188K2-B\000\000\000\000\000\000\000\000\000\000\000\000',
+    ],
+    (Ecu.fwdRadar, 0x764, None): [
+      b'K131-67XK2-B\000\000\000\000\000\000\000\000\000\000\000\000',
+    ],
+    (Ecu.esp, 0x760, None): [
+      b'TN40-437K2-A\000\000\000\000\000\000\000\000\000\000\000\000',
+    ],
+    (Ecu.fwdCamera, 0x706, None): [
+      b'B61L-67XK2-V\000\000\000\000\000\000\000\000\000\000\000\000',
+    ]
   },
 
   CAR.Mazda3: {
