@@ -538,6 +538,14 @@ struct CarParams {
     programmedFuelInjection @14;
     electricBrakeBooster @15;
     shiftByWire @16;
+
+    # Mazda
+    ssu @17;  # start stop unit
+    epb @18;  # electronic parking brake
+    awd @19;  # all wheel drive module
+    bsm @20;  # blind spot monitoring
+    fbcm @21; # front body control module
+    rbcm @22; # rear body control module
   }
 
   enum FingerprintSource {

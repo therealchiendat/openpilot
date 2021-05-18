@@ -114,27 +114,27 @@ FW_VERSIONS = {
       b'KB7W-57KK2-A2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
     # F_BCM - Front Body Control Module
-    (Ecu.unknown, 0x726, None): [
+    (Ecu.fbcm, 0x726, None): [
       b'TK52-675X2-C-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
       ],
     # SSU - Start Stop Unit
-    (Ecu.unknown, 0x731, None): [
+    (Ecu.ssu, 0x731, None): [
       b'GMB6-675S1-A-05\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
     # R_BCM - Rear Body Control Module ?
-    (Ecu.unknown, 0x744, None): [
+    (Ecu.rbcm, 0x744, None): [
       b'B62W-675J1-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
     # BSM - Blind Spot Monitoring ?
-    (Ecu.unknown, 0x7c6, None): [
+    (Ecu.bsm, 0x7c6, None): [
       b'\x01KB8C-67YK6-\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
-    # CONTROL. Module. UNIT. Engine. Transfer Case?
-    (Ecu.unknown, 0x761, None): [
+    # AWD
+    (Ecu.awd, 0x761, None): [
       b'SH9N-189K2-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
-    #
-    (Ecu.unknown, 0x756, None): [
+    # Electrinic parking brake
+    (Ecu.epb, 0x756, None): [
       b'K123-430K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
     #
