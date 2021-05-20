@@ -78,8 +78,8 @@ FW_VERSIONS = {
   #
   CAR.CX5: {
     (Ecu.eps, 0x730, None): [
-      b'KJ01-3210X-G-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-      b'KJ01-3210X-M-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'KJ01-3210X-G-00\x00\x00\x00\x00\x00\x00\x00\x00\x00', # 2017
+      b'KJ01-3210X-M-00\x00\x00\x00\x00\x00\x00\x00\x00\x00', # 2021
     ],
     (Ecu.engine, 0x7e0, None): [
       b'PYNF-188K2-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
@@ -99,47 +99,27 @@ FW_VERSIONS = {
     ],
     (Ecu.transmission, 0x7e1, None): [
       b'PYNC-21PS1-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'PYB2-21PS1-G\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
-    #
     # IC - Instrument Cluster
     (Ecu.combinationMeter, 0x720, None): [
       b'K157-554K2-V\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    # F_BCM - Front Body Control Module
-    (Ecu.fbcm, 0x726, None): [
-      b'TK52-675X2-C-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'KGD1-554K2-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
     # SSU - Start Stop Unit
     (Ecu.ssu, 0x731, None): [
       b'GMB6-675S1-A-05\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'KJN4-675S1- -00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
     # Air Bag
     (Ecu.srs, 0x737, None): [
       b'KB7W-57KK2-A2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'KB7W-57KK2-B0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
-    # R_BCM - Rear Body Control Module
-    (Ecu.rbcm, 0x744, None): [
-      b'B62W-675J1-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    # Electrinic parking brake
+    # Electronic parking brake
     (Ecu.epb, 0x756, None): [
       b'K123-430K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    # AWD
-    (Ecu.awd, 0x761, None): [
-      b'SH9N-189K2-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    # HUD - Head Up Display
-    (Ecu.hud, 0x7b2, None): [
-      b'KB7W-55HK2-E\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    # BSM - Blind Spot Monitoring
-    (Ecu.bsm, 0x7c6, None): [
-      b'x01KB8C-67YK6-\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    #
-    (Ecu.unknown, 0x733, None): [
-      b'K123-61190-0401-N5693\x00\x00\x00',
+      b'KN3L-430K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
   },
 
@@ -148,8 +128,8 @@ FW_VERSIONS = {
   #
   CAR.CX9 : {
     (Ecu.eps, 0x730, None): [
-      b'KJ01-3210X-L-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-      b'KJ01-3210X-L-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'KJ01-3210X-L-00\x00\x00\x00\x00\x00\x00\x00\x00\x00', # 2019
+      b'KJ01-3210X-L-00\x00\x00\x00\x00\x00\x00\x00\x00\x00', # 2020
     ],
     (Ecu.engine, 0x7e0, None): [
       b'PX23-188K2-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
@@ -170,14 +150,9 @@ FW_VERSIONS = {
     (Ecu.transmission, 0x7e1, None): [
       b'PXM7-21PS1-A\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
-
     # IC - Instrument Cluster
     (Ecu.combinationMeter, 0x720, None): [
-      b'TA0D-554K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    # F_BCM - Front Body Control Module
-    (Ecu.fbcm, 0x726, None): [
-      b'GBEF-675X2-B-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+      b'TA0D-554K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', # 2020
     ],
     # SSU - Start Stop Unit
     (Ecu.ssu, 0x731, None): [
@@ -187,38 +162,9 @@ FW_VERSIONS = {
     (Ecu.srs, 0x737, None): [
       b'TK48-57KK2-A40\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
-    # R_BCM - Rear Body Control Module
-    (Ecu.rbcm, 0x744, None): [
-      b'K156-675J1-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    # Electrinic parking brake
+    # Electronic parking brake
     (Ecu.epb, 0x756, None): [
       b'TA0A-430K2-A\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    # AWD
-    (Ecu.awd, 0x761, None): [
-      b'SH9N-189K2-G\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    # HUD - Head Up Display
-    (Ecu.hud, 0x7b2, None): [
-      b'TA0B-55HK2-\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    #
-    (Ecu.unknown, 0x733, None): [
-      b'TN54-61190-D\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    (Ecu.unknown, 0x702, None): [
-      b'TA0A-675J1-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    # CMU
-    (Ecu.unknown, 0x784, None): [
-      b'MAZ_CMU-150_70.00.335\x00\x00\x00',
-    ],
-    (Ecu.unknown, 0x7c1, None): [
-      b'TN39-66UK2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    (Ecu.unknown, 0x7b7, None): [
-      b'TK52-675Y0-E-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
   },
 
