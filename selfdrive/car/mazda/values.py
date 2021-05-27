@@ -17,9 +17,10 @@ class CarControllerParams:
   STEER_ERROR_MAX = 350           # max delta between torque cmd and torque motor
 
 class CAR:
-  CX5 = "Mazda CX-5 2017"
-  CX9 = "Mazda CX-9 2017"
-  Mazda3 = "Mazda3 2017"
+  CX5 = "Mazda CX-5"
+  CX9 = "Mazda CX-9"
+  Mazda3 = "Mazda 3"
+  CX9_NSL = "Mazda CX-9 2021"   # No Steer Lockout
 
 class LKAS_LIMITS:
   STEER_THRESHOLD = 15
@@ -117,6 +118,27 @@ FW_VERSIONS = {
       b'P52G-21PS1-F\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
       b'PYKE-21PS1-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
+  },
+
+  CAR.CX9_NSL : {
+    (Ecu.eps, 0x730, None): [
+      b'TC3M-3210X-A-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.engine, 0x7e0, None): [
+      b'PXM4-188K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.fwdRadar, 0x764, None): [
+      b'K131-67XK2-E\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.esp, 0x760, None): [
+      b'TA0B-437K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.fwdCamera, 0x706, None): [
+      b'GSH7-67XK2-M\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
+    (Ecu.transmission, 0x7e1, None): [
+      b'PXM4-21PS1-B\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
+    ],
   }
 }
 
@@ -124,7 +146,12 @@ FW_VERSIONS = {
 DBC = {
   CAR.CX5: dbc_dict('mazda_2017', None),
   CAR.CX9: dbc_dict('mazda_2017', None),
+  CAR.CX9_NSL: dbc_dict('mazda_2017', None),
   CAR.Mazda3: dbc_dict('mazda_2017', None),
 }
 
-GEN1 = [ CAR.CX5, CAR.CX9, CAR.Mazda3 ]
+# Gen 1 hardware: same CAN messages and same camera
+GEN1 = [ CAR.CX5, CAR.CX9, CAR.CX9_NSL, CAR.Mazda3 ]
+
+# Cars with Steer Lockout
+STEER_LOCK_CAR = [ CAR.CX5, CAR.CX9, CAR.Mazda3 ]
