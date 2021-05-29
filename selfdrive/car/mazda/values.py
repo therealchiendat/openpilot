@@ -21,7 +21,7 @@ class CAR:
   CX9 = "Mazda CX-9"
   Mazda3 = "Mazda 3"
   Mazda6 = "Mazda 6"
-  CX9_NSL = "Mazda CX-9 2021"   # No Steer Lockout
+  CX9_2021 = "Mazda CX-9 2021"   # No Steer Lockout
 
 class LKAS_LIMITS:
   STEER_THRESHOLD = 15
@@ -142,7 +142,7 @@ FW_VERSIONS = {
     ],
   },
 
-  CAR.CX9_NSL : {
+  CAR.CX9_2021 : {
     (Ecu.eps, 0x730, None): [
       b'TC3M-3210X-A-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
@@ -168,13 +168,13 @@ FW_VERSIONS = {
 DBC = {
   CAR.CX5: dbc_dict('mazda_2017', None),
   CAR.CX9: dbc_dict('mazda_2017', None),
-  CAR.CX9_NSL: dbc_dict('mazda_2017', None),
+  CAR.CX9_2021: dbc_dict('mazda_2017', None),
   CAR.Mazda3: dbc_dict('mazda_2017', None),
   CAR.Mazda6: dbc_dict('mazda_2017', None),
 }
 
 # Gen 1 hardware: same CAN messages and same camera
-GEN1 = [ CAR.CX5, CAR.CX9, CAR.CX9_NSL, CAR.Mazda3, CAR.Mazda6 ]
+GEN1 = [ CAR.CX5, CAR.CX9, CAR.CX9_2021, CAR.Mazda3, CAR.Mazda6 ]
 
 # Cars with Steer Lockout
 STEER_LOCK_CAR = [ CAR.CX5, CAR.CX9, CAR.Mazda3, CAR.Mazda6 ]
