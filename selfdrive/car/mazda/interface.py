@@ -21,8 +21,7 @@ class CarInterface(CarInterfaceBase):
     ret.carName = "mazda"
     ret.safetyModel = car.CarParams.SafetyModel.mazda
 
-    #if candidate in STEER_LOCK_CAR:
-    #  ret.dashcamOnly = True
+    #ret.dashcamOnly = candidate in STEER_LOCK_CAR
 
     ret.radarOffCan = True
 
@@ -38,9 +37,9 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.19], [0.019]]
       ret.lateralTuning.pid.kf = 0.00006
-    elif candidate in [CAR.CX9, CAR.CX9_NSL]:
+    elif candidate in [CAR.CX9, CAR.CX9_2021]:
       ret.mass = 4217 * CV.LB_TO_KG + STD_CARGO_KG
-      ret.wheelbase = 2.9
+      ret.wheelbase = 3.1
       ret.steerRatio = 17.6
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.19], [0.019]]
@@ -49,6 +48,13 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 2875 * CV.LB_TO_KG + STD_CARGO_KG
       ret.wheelbase = 2.7
       ret.steerRatio = 14.0
+      ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
+      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.19], [0.019]]
+      ret.lateralTuning.pid.kf = 0.00006
+    elif candidate == CAR.Mazda6:
+      ret.mass = 3443 * CV.LB_TO_KG + STD_CARGO_KG
+      ret.wheelbase = 2.83
+      ret.steerRatio = 15.5
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.19], [0.019]]
       ret.lateralTuning.pid.kf = 0.00006
@@ -83,8 +89,8 @@ class CarInterface(CarInterfaceBase):
     # events
     events = self.create_common_events(ret)
 
-    #if self.CS.low_speed_lockout:
-    #  events.add(EventName.belowEngageSpeed)
+    if self.CS.low_speed_lockout:
+      events.add(EventName.belowEngageSpeed)
 
     if self.CS.low_speed_alert:
       events.add(EventName.belowSteerSpeed)
