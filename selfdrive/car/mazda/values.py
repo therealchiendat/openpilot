@@ -17,11 +17,11 @@ class CarControllerParams:
   STEER_ERROR_MAX = 350           # max delta between torque cmd and torque motor
 
 class CAR:
-  CX5 = "Mazda CX-5"
-  CX9 = "Mazda CX-9"
-  Mazda3 = "Mazda 3"
-  Mazda6 = "Mazda 6"
-  CX9_2021 = "Mazda CX-9 2021"   # No Steer Lockout
+  CX5 = "MAZDA CX-5"
+  CX9 = "MAZDA CX-9"
+  MAZDA3 = "MAZDA 3"
+  MAZDA6 = "MAZDA 6"
+  CX9_2021 = "MAZDA CX-9 2021"   # No Steer Lockout
 
 class LKAS_LIMITS:
   STEER_THRESHOLD = 15
@@ -101,7 +101,7 @@ FW_VERSIONS = {
     ],
   },
 
-  CAR.Mazda3: {
+  CAR.MAZDA3: {
     (Ecu.eps, 0x730, None): [
       b'PY2P-188K2-C\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
       b'K070-3210X-C-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
@@ -130,7 +130,7 @@ FW_VERSIONS = {
     ],
   },
 
-  CAR.Mazda6: {
+  CAR.MAZDA6: {
     (Ecu.eps, 0x730, None): [
       b'GBEF-3210X-B-00\x00\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
@@ -178,12 +178,12 @@ DBC = {
   CAR.CX5: dbc_dict('mazda_2017', None),
   CAR.CX9: dbc_dict('mazda_2017', None),
   CAR.CX9_2021: dbc_dict('mazda_2017', None),
-  CAR.Mazda3: dbc_dict('mazda_2017', None),
-  CAR.Mazda6: dbc_dict('mazda_2017', None),
+  CAR.MAZDA3: dbc_dict('mazda_2017', None),
+  CAR.MAZDA6: dbc_dict('mazda_2017', None),
 }
 
 # Gen 1 hardware: same CAN messages and same camera
-GEN1 = [ CAR.CX5, CAR.CX9, CAR.CX9_2021, CAR.Mazda3, CAR.Mazda6 ]
+GEN1 = [ CAR.CX5, CAR.CX9, CAR.CX9_2021, CAR.MAZDA3, CAR.MAZDA6 ]
 
 # Cars with Steer Lockout
-STEER_LOCK_CAR = [ CAR.CX5, CAR.CX9, CAR.Mazda3, CAR.Mazda6 ]
+STEER_LOCK_CAR = [ CAR.CX5, CAR.CX9, CAR.MAZDA3, CAR.MAZDA6 ]
